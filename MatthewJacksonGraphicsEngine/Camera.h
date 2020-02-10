@@ -1,8 +1,11 @@
 #pragma once
 #include "glm.hpp"
+#include "glfw3.h"
 
 class Camera
 {
+public:
+
 	glm::mat4 WorldTransform;
 
 	glm::mat4 ViewTransform;
@@ -11,13 +14,20 @@ class Camera
 
 	glm::mat4 ProjectionViewTransform;
 
-	glm::vec3 cameraPos;
+	//variables
+
 	
-	glm::vec3 cameraDirection;
+	glm::vec3 CameraPosition;
+	
+	glm::vec3 CameraFront;
 
-	glm::vec3 up;
+	glm::vec3 CameraUp;
 
-	glm::vec3 cameraRight;
+	glm::mat4 projection;
+
+	glm::mat4 model;
+
+	float speed;
 
 	//constructor
 	Camera();
@@ -25,17 +35,18 @@ class Camera
 	//destructor
 	~Camera();
 
-	void Update(float deltatime);
+	void Update(float deltatime, GLFWwindow* window);
 
+	//
 	void SetPerspective(float FieldOfView, float AspectRatio, float Near, float Far);
+	
+	// (requires CameraPos, direction and up/right to be setup
+	void SetLookAt(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
 
-	void SetLookAt(glm::vec3 From, glm::vec3 To, glm::vec3 Up);
-
+	
 	void SetPosition(glm::mat4 position);
 
-	void SetCameraPos(glm::vec3 position);
 
-	void SetCameraDirection(glm::vec3 target);
 
 	//gets the world transform of the camera
 	glm::mat4 GetWorldTransform();
@@ -49,7 +60,7 @@ class Camera
 	//gets the projection view transform
 	glm::mat4 GetProjectionView();
 
-	void UpdateProjectionViewTransform();
+	void UpdateProjectionViewTransform(glm::mat4 pvm);
 
 };
 

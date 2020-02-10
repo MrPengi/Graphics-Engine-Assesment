@@ -6,6 +6,7 @@
 #include "ext.hpp"
 #include "gl_core_4_5.h"
 #include "glfw3.h"
+#include "Camera.h"
 
 using uint = unsigned int;
 
@@ -22,6 +23,7 @@ int main()
 
 	//create a new window
 	GLFWwindow* NewWindow = glfwCreateWindow(1280, 720, "Display Window", nullptr, nullptr);
+
 
 	//if NewWindow is null somehow terminate the window and close the program
 	if (NewWindow == nullptr)
@@ -121,11 +123,18 @@ int verticiesCount = 24;
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 
-	glm::mat4 projection = glm::perspective(1.507f, 16 / 9.0f, 0.0f, 7.0f);
-	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
-	glm::mat4 model = glm::mat4(1);
+	//CAMERA STUFFS
+
+	Camera myCamera;
 
 	
+	myCamera.SetPerspective(1.507f, 16 / 9.0f, 0.0f, 7.0f);
+	myCamera.SetLookAt(glm::vec3(0, 0, -1), glm::vec3(0), glm::vec3(0, 1, 0));
+
+	//glm::mat4 projection = glm::perspective(1.507f, 16 / 9.0f, 0.0f, 7.0f);
+	//glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
+	glm::mat4 model = glm::mat4(1);
+
 
 
 	//SHADERS ***
@@ -260,9 +269,13 @@ int verticiesCount = 24;
 			std::cout << verticies[i].x << " " << verticies[i].y << verticies[i].z << " " << verticies[i].z << " \n";
 		}*/
 
+		myCamera.Update(deltaTime, NewWindow);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		glm::mat4 pvm = projection * view * model;
+		//glm::mat4 pvm = myCamera.projection * myCamera.ViewTransform * model;
+		myCamera.UpdateProjectionViewTransform(model);
+
 
 		//pink
 		glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
@@ -274,7 +287,7 @@ int verticiesCount = 24;
 
 		//if (press)
 		//{
-			model = glm::rotate(model, 0.016f, glm::vec3(-1, -1, -1));
+			//model = glm::rotate(model, 0.016f, glm::vec3(-1, -1, -1));
 		//}
 
 		/*if (!press)
@@ -287,7 +300,7 @@ int verticiesCount = 24;
 
 		glUseProgram(shader_program_ID);
 		auto uniform_location = glGetUniformLocation(shader_program_ID, "projection_view_matrix");
-		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(pvm));
+		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(myCamera.ProjectionViewTransform));
 		uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
 		uniform_location = glGetUniformLocation(shader_program_ID, "color");
