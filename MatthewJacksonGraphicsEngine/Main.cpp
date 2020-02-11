@@ -253,6 +253,7 @@ int verticiesCount = 24;
 	float previousFrame = 0;
 	//bool press = true;
 
+	//make the shape wireframe
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	//game loop
@@ -269,12 +270,13 @@ int verticiesCount = 24;
 			std::cout << verticies[i].x << " " << verticies[i].y << verticies[i].z << " " << verticies[i].z << " \n";
 		}*/
 
+		//update the camera
 		myCamera.Update(deltaTime, NewWindow);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		//glm::mat4 pvm = myCamera.projection * myCamera.ViewTransform * model;
-		myCamera.UpdateProjectionViewTransform(model);
+		//myCamera.UpdateProjectionViewTransform(model);
 
 
 		//pink
@@ -287,7 +289,7 @@ int verticiesCount = 24;
 
 		//if (press)
 		//{
-			//model = glm::rotate(model, 0.016f, glm::vec3(-1, -1, -1));
+			model = glm::rotate(model, 0.016f, glm::vec3(1, 1, 1));
 		//}
 
 		/*if (!press)

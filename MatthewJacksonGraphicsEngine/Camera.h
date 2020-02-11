@@ -17,15 +17,15 @@ public:
 	//variables
 
 	
-	glm::vec3 CameraPosition;
+	//glm::vec3 CameraPosition;
 	
-	glm::vec3 CameraFront;
+	//glm::vec3 CameraFront;
 
-	glm::vec3 CameraUp;
+	//glm::vec3 CameraUp;
 
-	glm::mat4 projection;
+	//glm::mat4 projection;
 
-	glm::mat4 model;
+	//glm::mat4 model;
 
 	float speed;
 
@@ -44,7 +44,7 @@ public:
 	void SetLookAt(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
 
 	
-	void SetPosition(glm::mat4 position);
+	void SetPosition(glm::vec3 position);
 
 
 
@@ -60,7 +60,7 @@ public:
 	//gets the projection view transform
 	glm::mat4 GetProjectionView();
 
-	void UpdateProjectionViewTransform(glm::mat4 pvm);
+	void UpdateProjectionViewTransform();
 
 };
 
