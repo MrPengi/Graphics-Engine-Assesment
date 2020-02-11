@@ -14,6 +14,11 @@ public:
 
 	glm::mat4 ProjectionViewTransform;
 
+	float timer = 0;
+
+	bool mouseCatch = false;
+
+	float angularSpeed = 0.01f;
 	//variables
 
 	

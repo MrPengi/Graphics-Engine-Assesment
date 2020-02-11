@@ -59,42 +59,47 @@ int main()
 	};
 	int verticiesCount = 6;*/
 
+	float one = rand() % 5;
+	float two = rand() % 5;
+	float three = rand() % 5;
+	float four = rand() % 5;
+	
 	glm::vec3 verticies[] =
-{
-	glm::vec3(-0.5f, 0.5f, 0.0f),
-	glm::vec3(0.5f, 0.5f, 0.0f),
-	glm::vec3(-0.5f, -0.5f, 0.0f), //3 (base left)
-
-	glm::vec3(0.5f, 0.5f, 0.0f),
-	glm::vec3(-0.5f, -0.5f, 0.0f),
-	glm::vec3(0.5f, -0.5f, 0.0f), //6 (base right)
-
-	glm::vec3(-0.5f, 0.5f, 0.0f),
-	glm::vec3(0.0f, 0.5f, 0.5f),
-	glm::vec3(0.5f, 0.5f, 0.0f), //9 (top side)
-
-	glm::vec3(0.5f, -0.5f, 0.0f),
-	glm::vec3(0.0f, -0.5f, 0.5f),
-	glm::vec3(-0.5f, -0.5f, 0.0f), //12 (bottom side)
-
-	glm::vec3(0.5f, -0.5f, 0.0f),
-	glm::vec3(0.0f, 0.5f, 0.5f),
-	glm::vec3(-0.5f, 0.5f, 0.0f), //15 (top to bottom right)
-
-	glm::vec3(0.5f, 0.5f, 0.0f),
-	glm::vec3(-0.5f, -0.5f, 0.0f),
-	glm::vec3(0.0f, 0.5f, 0.5f), //18 (top to bottom left)
-
-	glm::vec3(-0.5f, -0.5f, 0.0f),
-	glm::vec3(0.0f, 0.5f, 0.5f),
-	glm::vec3(0.0f, -0.5f, 0.5f), //21 (top to bottom left)
-
-	glm::vec3(0.5f, -0.5f, 0.0f),
-	glm::vec3(0.0f, 0.5f, 0.5f),
-	glm::vec3(0.0f, -0.5f, 0.5f) //24 (top to bottom left)
-
-};
-int verticiesCount = 24;
+	{
+		glm::vec3(one, two, three),
+		glm::vec3(two, one, four),
+		glm::vec3(two, three, one), //3 (base left)
+	
+		glm::vec3(two, three, one),
+		glm::vec3(four, one, three),
+		glm::vec3(one, four, two), //6 (base right)
+	
+		glm::vec3(four, one, three),
+		glm::vec3(three, one, two),
+		glm::vec3(four, one, two), //9 (top side)
+	
+		glm::vec3(one, four, two),
+		glm::vec3(four, two, one),
+		glm::vec3(two, one, three), //12 (bottom side)
+	
+		glm::vec3(three, one, two),
+		glm::vec3(four, three, one),
+		glm::vec3(one, two, three), //15 (top to bottom right)
+	
+		glm::vec3(one, three, four),
+		glm::vec3(two, one, four),
+		glm::vec3(four, two, one), //18 (top to bottom left)
+	
+		glm::vec3(one, four, two),
+		glm::vec3(one, three, two),
+		glm::vec3(four, one, two), //21 (top to bottom left)
+	
+		glm::vec3(four, two, three),
+		glm::vec3(two, four, three),
+		glm::vec3(three, two, four) //24 (top to bottom left)
+	
+	};
+	int verticiesCount = 24;
 	
 	//create and "load" mesh
 	uint VAO;
@@ -360,6 +365,49 @@ int verticiesCount = 24;
 //	glm::vec3(0.5f, -0.5f, 0.0f),
 //	glm::vec3(0.0f, 0.5f, 0.5f),
 //	glm::vec3(0.0f, -0.5f, 0.5f) //24 (top to bottom left)
+//
+//};
+//int verticiesCount = 24;
+
+//RANDOM(ISH) verticies for wack shapes (sometimes perfect triangles other times big cluster messes)
+//float one = rand() % 5;
+//float two = rand() % 5;
+//float three = rand() % 5;
+//float four = rand() % 5;
+//
+//glm::vec3 verticies[] =
+//{
+//	glm::vec3(one, two, three),
+//	glm::vec3(two, one, four),
+//	glm::vec3(two, three, one), //3 (base left)
+//
+//	glm::vec3(two, three, one),
+//	glm::vec3(four, one, three),
+//	glm::vec3(one, four, two), //6 (base right)
+//
+//	glm::vec3(four, one, three),
+//	glm::vec3(three, one, two),
+//	glm::vec3(four, one, two), //9 (top side)
+//
+//	glm::vec3(one, four, two),
+//	glm::vec3(four, two, one),
+//	glm::vec3(two, one, three), //12 (bottom side)
+//
+//	glm::vec3(three, one, two),
+//	glm::vec3(four, three, one),
+//	glm::vec3(one, two, three), //15 (top to bottom right)
+//
+//	glm::vec3(one, three, four),
+//	glm::vec3(two, one, four),
+//	glm::vec3(four, two, one), //18 (top to bottom left)
+//
+//	glm::vec3(one, four, two),
+//	glm::vec3(one, three, two),
+//	glm::vec3(four, one, two), //21 (top to bottom left)
+//
+//	glm::vec3(four, two, three),
+//	glm::vec3(two, four, three),
+//	glm::vec3(three, two, four) //24 (top to bottom left)
 //
 //};
 //int verticiesCount = 24;

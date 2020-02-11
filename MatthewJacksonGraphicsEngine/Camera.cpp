@@ -32,6 +32,8 @@ Camera::~Camera() {}
 void Camera::Update(float deltatime, GLFWwindow* window)
 {
 	glm::vec4 displacement = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	//WorldTransform[3]
+
 	//inputs to move camera
 	//if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	//{
@@ -70,16 +72,69 @@ void Camera::Update(float deltatime, GLFWwindow* window)
 	//SetLookAt(CameraPosition, glm::vec3(0) * CameraFront, glm::vec3(0, 1, 0));
 	//WorldTransform = glm::lookAt(CameraPosition, CameraFront, glm::vec3(0, 1, 0));
 
-	displacement.y -= (glfwGetKey(window, GLFW_KEY_W));
-	displacement.y += (glfwGetKey(window, GLFW_KEY_S));
+	displacement.y -= (glfwGetKey(window, GLFW_KEY_Q));
+	displacement.y += (glfwGetKey(window, GLFW_KEY_E));
 	displacement.x += (glfwGetKey(window, GLFW_KEY_D));
 	displacement.x -= (glfwGetKey(window, GLFW_KEY_A));
-	displacement.z -= (glfwGetKey(window, GLFW_KEY_Q));
-	displacement.z += (glfwGetKey(window, GLFW_KEY_E));
+	displacement.z -= (glfwGetKey(window, GLFW_KEY_W));
+	displacement.z += (glfwGetKey(window, GLFW_KEY_S));
 
 	WorldTransform[3] -= (displacement * speed * deltatime);
 
-	UpdateProjectionViewTransform();
+	if (displacement != glm::vec4(0.0f))
+	{
+		UpdateProjectionViewTransform();
+	}
+
+	//start of the mouse code wooooo
+	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS && !mouseCatch && timer < 0)
+	{
+		//disable mouse
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		mouseCatch = true;
+		timer = 10;
+	}
+	else if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS && mouseCatch && timer < 0)
+	{
+		//enable mouse
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		mouseCatch = false;
+		timer = 10;
+	}
+
+	if (timer > -1)
+	{
+		timer--;
+	}
+
+	//time to actually look with the mouse oo oo
+	double cursorPositionX;
+	double cursorPositionY;
+	
+	//get mouse position
+	glfwGetCursorPos(window, &cursorPositionX, &cursorPositionY);
+
+	//to do store resolution of camera?
+
+	//calculate offset from screen centre this frame
+	double deltaX = cursorPositionX - (1280 * 0.5);
+	double deltaY = cursorPositionY - (720 * 0.5);
+
+	glfwSetCursorPos(window, 1280 * 0.5, 720 * 0.5);
+
+	if (deltaX || deltaY)
+	{
+		auto rotation = glm::mat4(1.0f);
+
+		rotation = glm::rotate(rotation, float(angularSpeed * deltatime * -deltaX), glm::vec3(ViewTransform[1]));
+
+		rotation = glm::rotate(rotation, float(angularSpeed * deltatime * -deltaY), glm::vec3(1.0f, 0.0f, 0.0f));
+
+		WorldTransform *= rotation;
+
+		UpdateProjectionViewTransform();
+	}
+
 	//ViewTransform = glm::inverse(WorldTransform);
 }
 
