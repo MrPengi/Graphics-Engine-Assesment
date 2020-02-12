@@ -16,9 +16,11 @@ public:
 
 	float timer = 0;
 
-	bool mouseCatch = false;
+	bool mouseCatch = true;
 
 	float angularSpeed = 0.01f;
+
+	bool firstMouseCall = true;
 	//variables
 
 	

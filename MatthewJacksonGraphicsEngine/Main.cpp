@@ -245,13 +245,8 @@ int main()
 
 	//bool colourChange = false;
 
-	//float one = rand() % 10;
-	//float two = /*rand() % 10*/ 0;
-	//float three = /*rand() % 10*/ 0;
-	//float four = /*rand() % 10*/ 0;
-
-	/*float random = rand() % 10;
-	float iterator = 0;*/
+	float iterator = 0;
+	float timer = 1;
 
 	float deltaTime = 0;
 	float currentFrame = 0;
@@ -275,6 +270,63 @@ int main()
 			std::cout << verticies[i].x << " " << verticies[i].y << verticies[i].z << " " << verticies[i].z << " \n";
 		}*/
 
+		//pink
+		glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
+
+		//testing changing the shape per frame
+		if (iterator > timer)
+		{
+			one = rand() % 5;
+			two = rand() % 5;
+			three = rand() % 5;
+			four = rand() % 5;
+
+			glm::vec3 verticies[] =
+			{
+				glm::vec3(one, two, three),
+				glm::vec3(two, one, four),
+				glm::vec3(two, three, one), //3 (base left)
+
+				glm::vec3(two, three, one),
+				glm::vec3(four, one, three),
+				glm::vec3(one, four, two), //6 (base right)
+
+				glm::vec3(four, one, three),
+				glm::vec3(three, one, two),
+				glm::vec3(four, one, two), //9 (top side)
+
+				glm::vec3(one, four, two),
+				glm::vec3(four, two, one),
+				glm::vec3(two, one, three), //12 (bottom side)
+
+				glm::vec3(three, one, two),
+				glm::vec3(four, three, one),
+				glm::vec3(one, two, three), //15 (top to bottom right)
+
+				glm::vec3(one, three, four),
+				glm::vec3(two, one, four),
+				glm::vec3(four, two, one), //18 (top to bottom left)
+
+				glm::vec3(one, four, two),
+				glm::vec3(one, three, two),
+				glm::vec3(four, one, two), //21 (top to bottom left)
+
+				glm::vec3(four, two, three),
+				glm::vec3(two, four, three),
+				glm::vec3(three, two, four) //24 (top to bottom left)
+
+			};
+
+			//color = glm::vec4(one * 0.1f, two * 0.1f, three * 0.1f, 0.0f);
+
+			glBindVertexArray(VAO);
+			glBindBuffer(GL_ARRAY_BUFFER, VBO);
+			glBufferData(GL_ARRAY_BUFFER, verticiesCount * sizeof(glm::vec3), &verticies[0], GL_STATIC_DRAW);
+
+			iterator = timer - iterator;
+		}
+		iterator += 1 * deltaTime;
+
 		//update the camera
 		myCamera.Update(deltaTime, NewWindow);
 
@@ -284,8 +336,6 @@ int main()
 		//myCamera.UpdateProjectionViewTransform(model);
 
 
-		//pink
-		glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
 
 		//if (glfwGetKey(NewWindow, GLFW_KEY_SPACE) == GLFW_PRESS)
 		//{

@@ -34,53 +34,36 @@ void Camera::Update(float deltatime, GLFWwindow* window)
 	glm::vec4 displacement = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	//WorldTransform[3]
 
-	//inputs to move camera
-	//if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-	//{
-	//	//CameraPosition.z += speed * deltatime;
-	//	
-	//}
-	//if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-	//{
-	//	//CameraPosition.z -= speed * deltatime;
+	//lets add a sprint yo
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT))
+	{
+		speed = 10;
+		angularSpeed = 0.02f;
+	}
+	else
+	{
+		speed = 2;
+		angularSpeed = 0.01f;
+	}
 
-	//}
-	//if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-	//{
-	//	//CameraPosition.x -= speed * deltatime;
-	//	//CameraPosition -= glm::normalize(glm::cross(CameraFront, CameraUp)) * speed * deltatime;
-	//
-	//}
-	//if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-	//{
-	//	//CameraPosition.x += speed * deltatime;
-	//	//CameraPosition += glm::normalize(glm::cross(CameraFront, CameraUp)) * speed * deltatime;
-	//
-	//}
-	//if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-	//{
-	//	//CameraPosition.y -= speed * deltatime;
-	//	//CameraPosition -= glm::normalize(glm::cross(CameraFront, CameraUp)) * speed * deltatime;
-	//
-	//}
-	//if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-	//{
-	//	//CameraPosition.y += speed * deltatime;
-	//	//CameraPosition += glm::normalize(glm::cross(CameraFront, CameraUp)) * speed * deltatime;
-	//
-	//}
-	//SetLookAt(CameraPosition, glm::vec3(0) * CameraFront, glm::vec3(0, 1, 0));
-	//WorldTransform = glm::lookAt(CameraPosition, CameraFront, glm::vec3(0, 1, 0));
+	//INPUT commands yay
+	displacement.y -= (glfwGetKey(window, GLFW_KEY_Q)); //up
+	displacement.y += (glfwGetKey(window, GLFW_KEY_E)); //down
 
-	displacement.y -= (glfwGetKey(window, GLFW_KEY_Q));
-	displacement.y += (glfwGetKey(window, GLFW_KEY_E));
-	displacement.x += (glfwGetKey(window, GLFW_KEY_D));
-	displacement.x -= (glfwGetKey(window, GLFW_KEY_A));
-	displacement.z -= (glfwGetKey(window, GLFW_KEY_W));
-	displacement.z += (glfwGetKey(window, GLFW_KEY_S));
+	displacement.x += (glfwGetKey(window, GLFW_KEY_D)); //left
+	displacement.x -= (glfwGetKey(window, GLFW_KEY_A)); //right
 
-	WorldTransform[3] -= (displacement * speed * deltatime);
+	displacement.z -= (glfwGetKey(window, GLFW_KEY_W)); //forward
+	displacement.z += (glfwGetKey(window, GLFW_KEY_S)); //backwards
 
+	//make sure it accomodates direction (so if i look left W makes me go forward still instead of previous forward)
+	glm::vec4 updatedDisplacement = -displacement.z * WorldTransform[2] + displacement.y * WorldTransform[1] - displacement.x * WorldTransform[0];
+	glm::normalize(updatedDisplacement);
+
+	//actually apply the movement change
+	WorldTransform[3] -= (updatedDisplacement * speed * deltatime);
+
+	//only update if the displacement has been modified
 	if (displacement != glm::vec4(0.0f))
 	{
 		UpdateProjectionViewTransform();
@@ -107,6 +90,8 @@ void Camera::Update(float deltatime, GLFWwindow* window)
 		timer--;
 	}
 
+	
+	
 	//time to actually look with the mouse oo oo
 	double cursorPositionX;
 	double cursorPositionY;
@@ -121,6 +106,13 @@ void Camera::Update(float deltatime, GLFWwindow* window)
 	double deltaY = cursorPositionY - (720 * 0.5);
 
 	glfwSetCursorPos(window, 1280 * 0.5, 720 * 0.5);
+
+	if (firstMouseCall)
+	{
+		deltaX = 0;
+		deltaY = 0;
+		firstMouseCall = false;
+	}
 
 	if (deltaX || deltaY)
 	{
