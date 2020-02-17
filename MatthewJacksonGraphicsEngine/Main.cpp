@@ -7,6 +7,7 @@
 #include "gl_core_4_5.h"
 #include "glfw3.h"
 #include "Camera.h"
+#include "OBJMesh.h"
 
 using uint = unsigned int;
 
@@ -59,50 +60,56 @@ int main()
 	};
 	int verticiesCount = 6;*/
 
+	aie::OBJMesh soulSpearMesh;
+	soulSpearMesh.load("..\\Models\\soulspear.obj", false, false);
+
+	aie::OBJMesh TrooperMesh;
+	TrooperMesh.load("..\\Models\\Alien_Small.obj", false, false);
+
 	float one = rand() % 5;
 	float two = rand() % 5;
 	float three = rand() % 5;
 	float four = rand() % 5;
 	
-	glm::vec3 verticies[] =
-	{
-		glm::vec3(one, two, three),
-		glm::vec3(two, one, four),
-		glm::vec3(two, three, one), //3 (base left)
-	
-		glm::vec3(two, three, one),
-		glm::vec3(four, one, three),
-		glm::vec3(one, four, two), //6 (base right)
-	
-		glm::vec3(four, one, three),
-		glm::vec3(three, one, two),
-		glm::vec3(four, one, two), //9 (top side)
-	
-		glm::vec3(one, four, two),
-		glm::vec3(four, two, one),
-		glm::vec3(two, one, three), //12 (bottom side)
-	
-		glm::vec3(three, one, two),
-		glm::vec3(four, three, one),
-		glm::vec3(one, two, three), //15 (top to bottom right)
-	
-		glm::vec3(one, three, four),
-		glm::vec3(two, one, four),
-		glm::vec3(four, two, one), //18 (top to bottom left)
-	
-		glm::vec3(one, four, two),
-		glm::vec3(one, three, two),
-		glm::vec3(four, one, two), //21 (top to bottom left)
-	
-		glm::vec3(four, two, three),
-		glm::vec3(two, four, three),
-		glm::vec3(three, two, four) //24 (top to bottom left)
-	
-	};
-	int verticiesCount = 24;
+	//glm::vec3 verticies[] =
+	//{
+	//	glm::vec3(-0.5f, 0.5f, 0.0f),
+	//		glm::vec3(0.5f, 0.5f, 0.0f),
+	//		glm::vec3(-0.5f, -0.5f, 0.0f), //3 (base left)
+	//	
+	//		glm::vec3(0.5f, 0.5f, 0.0f),
+	//		glm::vec3(-0.5f, -0.5f, 0.0f),
+	//		glm::vec3(0.5f, -0.5f, 0.0f), //6 (base right)
+	//	
+	//		glm::vec3(-0.5f, 0.5f, 0.0f),
+	//		glm::vec3(0.0f, 0.5f, 0.5f),
+	//		glm::vec3(0.5f, 0.5f, 0.0f), //9 (top side)
+	//	
+	//		glm::vec3(0.5f, -0.5f, 0.0f),
+	//		glm::vec3(0.0f, -0.5f, 0.5f),
+	//		glm::vec3(-0.5f, -0.5f, 0.0f), //12 (bottom side)
+	//	
+	//		glm::vec3(0.5f, -0.5f, 0.0f),
+	//		glm::vec3(0.0f, 0.5f, 0.5f),
+	//		glm::vec3(-0.5f, 0.5f, 0.0f), //15 (top to bottom right)
+	//	
+	//		glm::vec3(0.5f, 0.5f, 0.0f),
+	//		glm::vec3(-0.5f, -0.5f, 0.0f),
+	//		glm::vec3(0.0f, 0.5f, 0.5f), //18 (top to bottom left)
+	//	
+	//		glm::vec3(-0.5f, -0.5f, 0.0f),
+	//		glm::vec3(0.0f, 0.5f, 0.5f),
+	//		glm::vec3(0.0f, -0.5f, 0.5f), //21 (top to bottom left)
+	//	
+	//		glm::vec3(0.5f, -0.5f, 0.0f),
+	//		glm::vec3(0.0f, 0.5f, 0.5f),
+	//		glm::vec3(0.0f, -0.5f, 0.5f) //24 (top to bottom left)
+	//
+	//};
+	//int verticiesCount = 24;
 	
 	//create and "load" mesh
-	uint VAO;
+	/*uint VAO;
 	uint VBO;
 	uint IBO;
 
@@ -118,21 +125,25 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, verticiesCount * sizeof(glm::vec3), &verticies[0], GL_STATIC_DRAW);
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(int), index_buffer, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(int), index_buffer, GL_STATIC_DRAW);*/
 
-
+	/*
 	//glBindVertexArray(0);
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	*/
+
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 
+
 	//CAMERA STUFFS
 
+	//setup an instance of the camera
 	Camera myCamera;
 
-	
+	//set the camera's initial perspective and view direction
 	myCamera.SetPerspective(1.507f, 16 / 9.0f, 0.0f, 7.0f);
 	myCamera.SetLookAt(glm::vec3(0, 0, -1), glm::vec3(0), glm::vec3(0, 1, 0));
 
@@ -140,7 +151,7 @@ int main()
 	//glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 	glm::mat4 model = glm::mat4(1);
 
-
+	
 
 	//SHADERS ***
 	uint vertex_shader_ID = 0;
@@ -254,7 +265,11 @@ int main()
 	//bool press = true;
 
 	//make the shape wireframe
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CW);
 
 	//game loop
 	while (glfwWindowShouldClose(NewWindow) == false && glfwGetKey(NewWindow, GLFW_KEY_ESCAPE) != GLFW_PRESS)
@@ -271,61 +286,12 @@ int main()
 		}*/
 
 		//pink
-		glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
+		//glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
 
-		//testing changing the shape per frame
-		if (iterator > timer)
-		{
-			one = rand() % 5;
-			two = rand() % 5;
-			three = rand() % 5;
-			four = rand() % 5;
+		//random color
+		//glm::vec4 color = glm::vec4(one * 0.2f, two * 0.2f, three * 0.2f, 1.0f);
 
-			glm::vec3 verticies[] =
-			{
-				glm::vec3(one, two, three),
-				glm::vec3(two, one, four),
-				glm::vec3(two, three, one), //3 (base left)
-
-				glm::vec3(two, three, one),
-				glm::vec3(four, one, three),
-				glm::vec3(one, four, two), //6 (base right)
-
-				glm::vec3(four, one, three),
-				glm::vec3(three, one, two),
-				glm::vec3(four, one, two), //9 (top side)
-
-				glm::vec3(one, four, two),
-				glm::vec3(four, two, one),
-				glm::vec3(two, one, three), //12 (bottom side)
-
-				glm::vec3(three, one, two),
-				glm::vec3(four, three, one),
-				glm::vec3(one, two, three), //15 (top to bottom right)
-
-				glm::vec3(one, three, four),
-				glm::vec3(two, one, four),
-				glm::vec3(four, two, one), //18 (top to bottom left)
-
-				glm::vec3(one, four, two),
-				glm::vec3(one, three, two),
-				glm::vec3(four, one, two), //21 (top to bottom left)
-
-				glm::vec3(four, two, three),
-				glm::vec3(two, four, three),
-				glm::vec3(three, two, four) //24 (top to bottom left)
-
-			};
-
-			//color = glm::vec4(one * 0.1f, two * 0.1f, three * 0.1f, 0.0f);
-
-			glBindVertexArray(VAO);
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBufferData(GL_ARRAY_BUFFER, verticiesCount * sizeof(glm::vec3), &verticies[0], GL_STATIC_DRAW);
-
-			iterator = timer - iterator;
-		}
-		iterator += 1 * deltaTime;
+		glm::vec4 color = glm::vec4(1);
 
 		//update the camera
 		myCamera.Update(deltaTime, NewWindow);
@@ -344,15 +310,15 @@ int main()
 
 		//if (press)
 		//{
-			model = glm::rotate(model, 0.016f, glm::vec3(1, 1, 1));
+			//model = glm::rotate(model, 0.016f, glm::vec3(1, 1, 1));
 		//}
 
 		/*if (!press)
 		{
 			model = glm::rotate(model, 0.016f, glm::vec3(-1, -1, -1));
 		}*/
-		
-		
+		TrooperMesh.draw();
+		soulSpearMesh.draw();
 		
 
 		glUseProgram(shader_program_ID);
@@ -363,12 +329,26 @@ int main()
 		uniform_location = glGetUniformLocation(shader_program_ID, "color");
 		glUniform4fv(uniform_location, 1, glm::value_ptr(color));
 
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, verticiesCount); //six becomes whatever veritcies are above
+
+		 if (iterator > timer)
+			{
+				one = rand() % 5;
+				two = rand() % 5;
+				three = rand() % 5;
+				four = rand() % 5;
+				iterator = timer - iterator;
+			}
+
+			iterator += 1 * deltaTime;
+		int vertexColorLocation = glGetUniformLocation(shader_program_ID, "color");
+		glUniform4f(vertexColorLocation, two * 0.2f, 0.3f, one * 0.1f, 1.0f);
+
+		//glBindVertexArray(VAO);
+		//glDrawArrays(GL_TRIANGLES, 0, verticiesCount); //six becomes whatever veritcies are above (uncomment when drawing shapes again)
 
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-
+		
 
 		glfwSwapBuffers(NewWindow);
 		glfwPollEvents();
@@ -462,6 +442,59 @@ int main()
 //};
 //int verticiesCount = 24;
 
+//testing changing the shape per frame
+//if (iterator > timer)
+//{
+//	one = rand() % 5;
+//	two = rand() % 5;
+//	three = rand() % 5;
+//	four = rand() % 5;
+//
+//	glm::vec3 verticies[] =
+//	{
+//		glm::vec3(one, two, three),
+//		glm::vec3(two, one, four),
+//		glm::vec3(two, three, one), //3 (base left)
+//
+//		glm::vec3(two, three, one),
+//		glm::vec3(four, one, three),
+//		glm::vec3(one, four, two), //6 (base right)
+//
+//		glm::vec3(four, one, three),
+//		glm::vec3(three, one, two),
+//		glm::vec3(four, one, two), //9 (top side)
+//
+//		glm::vec3(one, four, two),
+//		glm::vec3(four, two, one),
+//		glm::vec3(two, one, three), //12 (bottom side)
+//
+//		glm::vec3(three, one, two),
+//		glm::vec3(four, three, one),
+//		glm::vec3(one, two, three), //15 (top to bottom right)
+//
+//		glm::vec3(one, three, four),
+//		glm::vec3(two, one, four),
+//		glm::vec3(four, two, one), //18 (top to bottom left)
+//
+//		glm::vec3(one, four, two),
+//		glm::vec3(one, three, two),
+//		glm::vec3(four, one, two), //21 (top to bottom left)
+//
+//		glm::vec3(four, two, three),
+//		glm::vec3(two, four, three),
+//		glm::vec3(three, two, four) //24 (top to bottom left)
+//
+//	};
+//
+//	//color = glm::vec4(one * 0.1f, two * 0.1f, three * 0.1f, 0.0f);
+//
+//	glBindVertexArray(VAO);
+//	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+//	glBufferData(GL_ARRAY_BUFFER, verticiesCount * sizeof(glm::vec3), &verticies[0], GL_STATIC_DRAW);
+//
+//	iterator = timer - iterator;
+//}
+//iterator += 1 * deltaTime;
 
 //random colour code
 /*if (!colourChange)
