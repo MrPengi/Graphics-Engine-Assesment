@@ -8,11 +8,21 @@
 #include "glfw3.h"
 #include "Camera.h"
 #include "OBJMesh.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "..\Dependencies\stb_image.h"
 
 using uint = unsigned int;
 
+
+
 int main()
 {
+	struct Vertex
+	{
+		glm::vec3 position;
+		glm::vec2 uv;
+	};
+
 	srand(time(nullptr));
 	//initalise everything
 
@@ -60,8 +70,8 @@ int main()
 	};
 	int verticiesCount = 6;*/
 
-	aie::OBJMesh soulSpearMesh;
-	soulSpearMesh.load("..\\Models\\soulspear.obj", false, false);
+	//aie::OBJMesh soulSpearMesh;
+	//soulSpearMesh.load("..\\Models\\soulspear.obj", false, false);
 
 	aie::OBJMesh TrooperMesh;
 	TrooperMesh.load("..\\Models\\Alien_Small.obj", false, false);
@@ -71,49 +81,58 @@ int main()
 	float three = rand() % 5;
 	float four = rand() % 5;
 	
-	//glm::vec3 verticies[] =
-	//{
-	//	glm::vec3(-0.5f, 0.5f, 0.0f),
-	//		glm::vec3(0.5f, 0.5f, 0.0f),
-	//		glm::vec3(-0.5f, -0.5f, 0.0f), //3 (base left)
-	//	
-	//		glm::vec3(0.5f, 0.5f, 0.0f),
-	//		glm::vec3(-0.5f, -0.5f, 0.0f),
-	//		glm::vec3(0.5f, -0.5f, 0.0f), //6 (base right)
-	//	
-	//		glm::vec3(-0.5f, 0.5f, 0.0f),
-	//		glm::vec3(0.0f, 0.5f, 0.5f),
-	//		glm::vec3(0.5f, 0.5f, 0.0f), //9 (top side)
-	//	
-	//		glm::vec3(0.5f, -0.5f, 0.0f),
-	//		glm::vec3(0.0f, -0.5f, 0.5f),
-	//		glm::vec3(-0.5f, -0.5f, 0.0f), //12 (bottom side)
-	//	
-	//		glm::vec3(0.5f, -0.5f, 0.0f),
-	//		glm::vec3(0.0f, 0.5f, 0.5f),
-	//		glm::vec3(-0.5f, 0.5f, 0.0f), //15 (top to bottom right)
-	//	
-	//		glm::vec3(0.5f, 0.5f, 0.0f),
-	//		glm::vec3(-0.5f, -0.5f, 0.0f),
-	//		glm::vec3(0.0f, 0.5f, 0.5f), //18 (top to bottom left)
-	//	
-	//		glm::vec3(-0.5f, -0.5f, 0.0f),
-	//		glm::vec3(0.0f, 0.5f, 0.5f),
-	//		glm::vec3(0.0f, -0.5f, 0.5f), //21 (top to bottom left)
-	//	
-	//		glm::vec3(0.5f, -0.5f, 0.0f),
-	//		glm::vec3(0.0f, 0.5f, 0.5f),
-	//		glm::vec3(0.0f, -0.5f, 0.5f) //24 (top to bottom left)
-	//
+	//float textureCoords[] =
+	//{    //texture coords
+		//	1.0f, 1.0f,
+			//0.0f, 0.0f,
+			//0.0f, 1.0f,
+			//1.0f, 0.0f,
 	//};
-	//int verticiesCount = 24;
+
+	Vertex verticies[] =
+	{
+		{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(1.0f,0.0f)},
+		{glm::vec3(-0.5f, -0.5f, 0.0f),   glm::vec2(0.0f,0.0f)},
+		{glm::vec3(0.5f, 0.5f, 0.0f),  glm::vec2(1.0f,1.0f) }, //top right
+		{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(0.0f,1.0f) },//bottom right
+
+
+		//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1.0f,1.0f)},
+		//{glm::vec3(-0.5f, -0.5f, 0.0f),  glm::vec2(0.0f,1.0f)},//3 (base left)
+		
+		//{glm::vec3(-0.5f, 0.5f, 0.0f),glm::vec2(0.0f,0.5f) },
+		//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(0.5f,1.0f) },
+		//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(0.5f,0.0f) },//9 (top side)
+		//
+		//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
+		//{glm::vec3(0.0f, -0.5f, 0.5f),glm::vec2(0.0f,1.0f)},
+		//{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.3f,0.0f)},//12 (bottom side)
+		//
+		//{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(1.0f,0.0f)},
+		//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(1.0f,0.3f)},
+		//{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(0.0f,0.0f)},//15 (top to bottom right)
+		//
+		//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
+		//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1.0f,1.0f)},
+		//{glm::vec3(0.0f, 0.5f, 0.5f), glm::vec2(0.0f,0.0f)},//18 (top to bottom left)
+		//
+		//{glm::vec3(-0.5f, -0.5f, 0.0f),glm::vec2(0.0f,1.0f)},
+		//{glm::vec3(0.0f, -0.5f, 0.5f),glm::vec2(0.0f,0.0f)},
+		//{glm::vec3(0.0f, 0.5f, 0.5f), glm::vec2(1.0f,0.0f)},//21 (top to bottom left)
+		//
+		//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
+		//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(0.0f,1.0f)},
+		//{glm::vec3(0.0f, -0.5f, 0.5f), glm::vec2(0.0f,0.0f)}//24 (top to bottom left)
+	
+	};
+	int verticiesCount = 24; //24
 	
 	//create and "load" mesh
-	/*uint VAO;
+	uint VAO;
 	uint VBO;
 	uint IBO;
 
-	int index_buffer[]{ 0,1,2,1,2,3 };
+	int index_buffer[]{ 0,2,1,3,1,2 };
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -121,22 +140,51 @@ int main()
 
 	
 	
+	
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, verticiesCount * sizeof(glm::vec3), &verticies[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, verticiesCount * sizeof(Vertex), &verticies[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(int), index_buffer, GL_STATIC_DRAW);*/
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(int), index_buffer, GL_STATIC_DRAW);
 
-	/*
+	
 	//glBindVertexArray(0);
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	*/
+	
 
 
+	
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+
+
+	//texture code
+	uint testTexture;
+	int x, y, n;
+	unsigned char* data = stbi_load("../Textures/UV_Grid_Sm.jpg", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
+
+	glGenTextures(1, &testTexture);
+	glBindTexture(GL_TEXTURE_2D, testTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	//check if the texture loaded
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		//glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+	else
+	{
+		printf("loading texture failed");
+	}
+
+	stbi_image_free(data);
 
 	//CAMERA STUFFS
 
@@ -160,7 +208,8 @@ int main()
 
 	//load shader from file to string
 	std::string shader_data;
-	std::ifstream in_file_stream("..\\Shaders\\simple_vertex.glsl", std::ifstream::in);
+	//std::ifstream in_file_stream("..\\Shaders\\simple_vertex.glsl", std::ifstream::in);
+	std::ifstream in_file_stream("..\\Shaders\\simple_vertex2.glsl", std::ifstream::in);
 
 	//load the source into a string for complication
 	std::stringstream string_stream;
@@ -174,9 +223,9 @@ int main()
 	//allocate for shader program
 	vertex_shader_ID = glCreateShader(GL_VERTEX_SHADER);
 	//convert to raw cha*
-	const char* data = shader_data.c_str();
+	const char* dataOfShader = shader_data.c_str();
 	//send in shader location
-	glShaderSource(vertex_shader_ID, 1, (const GLchar**)&data, 0);
+	glShaderSource(vertex_shader_ID, 1, (const GLchar**)&dataOfShader, 0);
 	//build
 	glCompileShader(vertex_shader_ID);
 
@@ -189,7 +238,8 @@ int main()
 	}
 
 	//frag shader ROUND 2
-	std::ifstream in_file_stream_frag("..\\Shaders\\simple_frag.glsl", std::ifstream::in);
+	//std::ifstream in_file_stream_frag("..\\Shaders\\simple_frag.glsl", std::ifstream::in);
+	std::ifstream in_file_stream_frag("..\\Shaders\\simple_frag2.glsl", std::ifstream::in);
 
 	//load the source into a string for complication
 	std::stringstream frag_string_stream;
@@ -203,9 +253,9 @@ int main()
 	//allocate for shader program
 	fragment_shader_ID = glCreateShader(GL_FRAGMENT_SHADER);
 	//convert to raw cha*
-	data = shader_data.c_str();
+	dataOfShader = shader_data.c_str();
 	//send in shader location
-	glShaderSource(fragment_shader_ID, 1, (const GLchar**)&data, 0);
+	glShaderSource(fragment_shader_ID, 1, (const GLchar**)&dataOfShader, 0);
 	//build
 	glCompileShader(fragment_shader_ID);
 
@@ -252,7 +302,7 @@ int main()
 
 	//background colour (blue
 	//glClearColor(0.3, 0.5, 1.0, 1.0);
-	glClearColor(0, 0, 0, 0);
+	glClearColor(1, 1, 1, 1);
 
 	//bool colourChange = false;
 
@@ -267,9 +317,12 @@ int main()
 	//make the shape wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	glEnable(GL_CULL_FACE);
+	//glPolygonMode(GL_BACK, GL_LINE);
+
+	//glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glFrontFace(GL_CW);
+	//glEnable(GL_DEPTH_TEST);
+	//glFrontFace(GL_CW);
 
 	//game loop
 	while (glfwWindowShouldClose(NewWindow) == false && glfwGetKey(NewWindow, GLFW_KEY_ESCAPE) != GLFW_PRESS)
@@ -286,12 +339,12 @@ int main()
 		}*/
 
 		//pink
-		//glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
+		glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
 
 		//random color
 		//glm::vec4 color = glm::vec4(one * 0.2f, two * 0.2f, three * 0.2f, 1.0f);
 
-		glm::vec4 color = glm::vec4(1);
+		//glm::vec4 color = glm::vec4(1);
 
 		//update the camera
 		myCamera.Update(deltaTime, NewWindow);
@@ -318,7 +371,8 @@ int main()
 			model = glm::rotate(model, 0.016f, glm::vec3(-1, -1, -1));
 		}*/
 		TrooperMesh.draw();
-		soulSpearMesh.draw();
+		
+		//soulSpearMesh.draw();
 		
 
 		glUseProgram(shader_program_ID);
@@ -328,6 +382,8 @@ int main()
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
 		uniform_location = glGetUniformLocation(shader_program_ID, "color");
 		glUniform4fv(uniform_location, 1, glm::value_ptr(color));
+
+		
 
 
 		 if (iterator > timer)
@@ -343,11 +399,16 @@ int main()
 		int vertexColorLocation = glGetUniformLocation(shader_program_ID, "color");
 		glUniform4f(vertexColorLocation, two * 0.2f, 0.3f, one * 0.1f, 1.0f);
 
-		//glBindVertexArray(VAO);
+		glBindTexture(GL_TEXTURE_2D, testTexture);
+
+		glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, verticiesCount); //six becomes whatever veritcies are above (uncomment when drawing shapes again)
 
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+
+
+		
 		
 
 		glfwSwapBuffers(NewWindow);
