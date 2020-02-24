@@ -17,11 +17,29 @@ using uint = unsigned int;
 
 int main()
 {
-	struct Vertex
+	//og
+	/*struct Vertex
 	{
 		glm::vec3 position;
 		glm::vec2 uv;
+	};*/
+
+	struct Light
+	{
+		glm::vec3 direction;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
+		glm::vec3 ambient;
 	};
+
+	//changed for lighing tutorial
+	struct Vertex
+	{
+		glm::vec3 position;
+		glm::vec4 normal;
+		glm::vec2 uv;
+	}; 
+
 
 	srand(time(nullptr));
 	//initalise everything
@@ -89,41 +107,48 @@ int main()
 			//1.0f, 0.0f,
 	//};
 
+	//Vertex verticies[] =
+	//{
+	//	{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(1.0f,0.0f)},
+	//	{glm::vec3(-0.5f, -0.5f, 0.0f),   glm::vec2(0.0f,0.0f)},
+	//	{glm::vec3(0.5f, 0.5f, 0.0f),  glm::vec2(1.0f,1.0f) }, //top right
+	//	{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(0.0f,1.0f) },//bottom right
+	//
+	//	//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1.0f,1.0f)},
+	//	//{glm::vec3(-0.5f, -0.5f, 0.0f),  glm::vec2(0.0f,1.0f)},//3 (base left)
+	//	
+	//	//{glm::vec3(-0.5f, 0.5f, 0.0f),glm::vec2(0.0f,0.5f) },
+	//	//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(0.5f,1.0f) },
+	//	//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(0.5f,0.0f) },//9 (top side)
+	//	//
+	//	//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
+	//	//{glm::vec3(0.0f, -0.5f, 0.5f),glm::vec2(0.0f,1.0f)},
+	//	//{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.3f,0.0f)},//12 (bottom side)
+	//	//
+	//	//{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(1.0f,0.0f)},
+	//	//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(1.0f,0.3f)},
+	//	//{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(0.0f,0.0f)},//15 (top to bottom right)
+	//	//
+	//	//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
+	//	//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1.0f,1.0f)},
+	//	//{glm::vec3(0.0f, 0.5f, 0.5f), glm::vec2(0.0f,0.0f)},//18 (top to bottom left)
+	//	//
+	//	//{glm::vec3(-0.5f, -0.5f, 0.0f),glm::vec2(0.0f,1.0f)},
+	//	//{glm::vec3(0.0f, -0.5f, 0.5f),glm::vec2(0.0f,0.0f)},
+	//	//{glm::vec3(0.0f, 0.5f, 0.5f), glm::vec2(1.0f,0.0f)},//21 (top to bottom left)
+	//	//
+	//	//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
+	//	//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(0.0f,1.0f)},
+	//	//{glm::vec3(0.0f, -0.5f, 0.5f), glm::vec2(0.0f,0.0f)}//24 (top to bottom left)
+	//
+	//};
+
 	Vertex verticies[] =
 	{
-		{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(1.0f,0.0f)},
-		{glm::vec3(-0.5f, -0.5f, 0.0f),   glm::vec2(0.0f,0.0f)},
-		{glm::vec3(0.5f, 0.5f, 0.0f),  glm::vec2(1.0f,1.0f) }, //top right
-		{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(0.0f,1.0f) },//bottom right
-
-
-		//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1.0f,1.0f)},
-		//{glm::vec3(-0.5f, -0.5f, 0.0f),  glm::vec2(0.0f,1.0f)},//3 (base left)
-		
-		//{glm::vec3(-0.5f, 0.5f, 0.0f),glm::vec2(0.0f,0.5f) },
-		//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(0.5f,1.0f) },
-		//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(0.5f,0.0f) },//9 (top side)
-		//
-		//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
-		//{glm::vec3(0.0f, -0.5f, 0.5f),glm::vec2(0.0f,1.0f)},
-		//{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.3f,0.0f)},//12 (bottom side)
-		//
-		//{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(1.0f,0.0f)},
-		//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(1.0f,0.3f)},
-		//{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(0.0f,0.0f)},//15 (top to bottom right)
-		//
-		//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
-		//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1.0f,1.0f)},
-		//{glm::vec3(0.0f, 0.5f, 0.5f), glm::vec2(0.0f,0.0f)},//18 (top to bottom left)
-		//
-		//{glm::vec3(-0.5f, -0.5f, 0.0f),glm::vec2(0.0f,1.0f)},
-		//{glm::vec3(0.0f, -0.5f, 0.5f),glm::vec2(0.0f,0.0f)},
-		//{glm::vec3(0.0f, 0.5f, 0.5f), glm::vec2(1.0f,0.0f)},//21 (top to bottom left)
-		//
-		//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
-		//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(0.0f,1.0f)},
-		//{glm::vec3(0.0f, -0.5f, 0.5f), glm::vec2(0.0f,0.0f)}//24 (top to bottom left)
-	
+		{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec4(0.0f,0.0f, 0.0f, 1.0f), glm::vec2(1.0f,0.0f)},
+		{glm::vec3(-0.5f, -0.5f, 0.0f),   glm::vec4(0.0f,0.0f, 0.0f, 1.0f), glm::vec2(0.0f,0.0f)},
+		{glm::vec3(0.5f, 0.5f, 0.0f),  glm::vec4(0.0f,0.0f, 0.0f, 1.0f), glm::vec2(1.0f,1.0f) }, //top right
+		{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec4(0.0f,0.0f, 0.0f, 1.0f), glm::vec2(0.0f,1.0f) },//bottom right
 	};
 	int verticiesCount = 24; //24
 	
@@ -157,9 +182,21 @@ int main()
 	
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-
+	
+	//useage as lighting (tutorial)
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void*)16);
+
+	//useage as texture
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+
+
+	//setup of light
+	Light myLight =
+	{
+		(glm::vec3(0.0f,0.0f,1.0f)), (glm::vec3(0.0f,1.0f,0.0f)), (glm::vec3(0.3f,0.5f,0.0f)), (glm::vec3(0.25f, 0.25f, 1.0f))
+	};
 
 
 	//texture code
@@ -209,7 +246,7 @@ int main()
 	//load shader from file to string
 	std::string shader_data;
 	//std::ifstream in_file_stream("..\\Shaders\\simple_vertex.glsl", std::ifstream::in);
-	std::ifstream in_file_stream("..\\Shaders\\simple_vertex2.glsl", std::ifstream::in);
+	std::ifstream in_file_stream("..\\Shaders\\phong.vert", std::ifstream::in);
 
 	//load the source into a string for complication
 	std::stringstream string_stream;
@@ -238,8 +275,8 @@ int main()
 	}
 
 	//frag shader ROUND 2
-	//std::ifstream in_file_stream_frag("..\\Shaders\\simple_frag.glsl", std::ifstream::in);
-	std::ifstream in_file_stream_frag("..\\Shaders\\simple_frag2.glsl", std::ifstream::in);
+	//std::ifstream in_file_stream_frag("..\\Shaders\\simple_frag.glsl", std::ifstream::in); //or simple frag2 (for texture)
+	std::ifstream in_file_stream_frag("..\\Shaders\\phong.frag", std::ifstream::in);
 
 	//load the source into a string for complication
 	std::stringstream frag_string_stream;
@@ -320,7 +357,7 @@ int main()
 	//glPolygonMode(GL_BACK, GL_LINE);
 
 	//glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	//glCullFace(GL_BACK);
 	//glEnable(GL_DEPTH_TEST);
 	//glFrontFace(GL_CW);
 
@@ -339,10 +376,14 @@ int main()
 		}*/
 
 		//pink
-		glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
+		//glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
+
+		myLight.direction = glm::normalize(glm::vec3(glm::cos(deltaTime * 300), glm::sin(deltaTime * 300), 0));
+
+		//myLight.diffuse = glm::vec3(one, two, three);
 
 		//random color
-		//glm::vec4 color = glm::vec4(one * 0.2f, two * 0.2f, three * 0.2f, 1.0f);
+		glm::vec4 color = glm::vec4(one * 0.2f, two * 0.2f, three * 0.2f, 1.0f);
 
 		//glm::vec4 color = glm::vec4(1);
 
@@ -374,12 +415,31 @@ int main()
 		
 		//soulSpearMesh.draw();
 		
-
+		auto pvm = myCamera.ProjectionTransform * myCamera.ViewTransform * model;
 		glUseProgram(shader_program_ID);
 		auto uniform_location = glGetUniformLocation(shader_program_ID, "projection_view_matrix");
-		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(myCamera.ProjectionViewTransform));
-		uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
-		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
+		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(pvm));
+		
+		uniform_location = glGetUniformLocation(shader_program_ID, "NormalMatrix");
+		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(glm::mat3(glm::inverseTranspose(myCamera.WorldTransform))));
+
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "Ia");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.ambient));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "Id");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.diffuse));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "Is");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.specular));
+
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "LightDirection");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.direction));
+
+		//uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
+		//glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
+
 		uniform_location = glGetUniformLocation(shader_program_ID, "color");
 		glUniform4fv(uniform_location, 1, glm::value_ptr(color));
 
