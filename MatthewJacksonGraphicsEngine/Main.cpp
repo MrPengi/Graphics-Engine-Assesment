@@ -27,9 +27,7 @@ int main()
 	struct Light
 	{
 		glm::vec3 direction;
-		glm::vec3 diffuse;
-		glm::vec3 specular;
-		glm::vec3 ambient;
+		glm::vec3 colour;
 	};
 
 	//changed for lighing tutorial
@@ -38,6 +36,7 @@ int main()
 		glm::vec3 position;
 		glm::vec4 normal;
 		glm::vec2 uv;
+		glm::vec4 tangent;
 	}; 
 
 
@@ -92,7 +91,7 @@ int main()
 	//soulSpearMesh.load("..\\Models\\soulspear.obj", false, false);
 
 	aie::OBJMesh TrooperMesh;
-	TrooperMesh.load("..\\Models\\Alien_Small.obj", false, false);
+	TrooperMesh.load("..\\Models\\Alien_Medium.obj", false, false);
 
 	float one = rand() % 5;
 	float two = rand() % 5;
@@ -144,11 +143,11 @@ int main()
 	//};
 
 	Vertex verticies[] =
-	{
-		{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec4(0.0f,0.0f, 0.0f, 1.0f), glm::vec2(1.0f,0.0f)},
-		{glm::vec3(-0.5f, -0.5f, 0.0f),   glm::vec4(0.0f,0.0f, 0.0f, 1.0f), glm::vec2(0.0f,0.0f)},
-		{glm::vec3(0.5f, 0.5f, 0.0f),  glm::vec4(0.0f,0.0f, 0.0f, 1.0f), glm::vec2(1.0f,1.0f) }, //top right
-		{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec4(0.0f,0.0f, 0.0f, 1.0f), glm::vec2(0.0f,1.0f) },//bottom right
+	{//POSITION						//NORMAL							//TEXTURE COORDS
+		{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec4(0.0f,0.0f, -1.0f, 0.0f), glm::vec2(1.0f,0.0f), glm::vec4(0.0f,0.0f, 1.0f, 0.0f)},
+		{glm::vec3(-0.5f, -0.5f, 0.0f),   glm::vec4(0.0f,0.0f, -1.0f, 0.0f), glm::vec2(0.0f,0.0f), glm::vec4(0.0f,0.0f, 1.0f, 0.0f)},
+		{glm::vec3(0.5f, 0.5f, 0.0f),  glm::vec4(0.0f,0.0f, -1.0f, 0.0f), glm::vec2(1.0f,1.0f), glm::vec4(0.0f,0.0f, 1.0f, 0.0f) }, //top right
+		{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec4(0.0f,0.0f, -1.0f, 0.0f), glm::vec2(0.0f,1.0f), glm::vec4(0.0f,0.0f, 1.0f, 0.0f) },//bottom right
 	};
 	int verticiesCount = 24; //24
 	
@@ -191,18 +190,21 @@ int main()
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
 
+	//useage as tangent
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void*)16);
 
 	//setup of light
 	Light myLight =
 	{
-		(glm::vec3(0.0f,0.0f,1.0f)), (glm::vec3(0.0f,1.0f,0.0f)), (glm::vec3(0.3f,0.5f,0.0f)), (glm::vec3(0.25f, 0.25f, 1.0f))
+		(glm::vec3(0.0f,1.0f,0.0f)), (glm::vec3(0.25f,0.1f,1.0f))
 	};
 
 
 	//texture code
 	uint testTexture;
 	int x, y, n;
-	unsigned char* data = stbi_load("../Textures/UV_Grid_Sm.jpg", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
+	unsigned char* data = stbi_load("../Textures/Alien_Albedo.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
 
 	glGenTextures(1, &testTexture);
 	glBindTexture(GL_TEXTURE_2D, testTexture);
@@ -229,7 +231,7 @@ int main()
 	Camera myCamera;
 
 	//set the camera's initial perspective and view direction
-	myCamera.SetPerspective(1.507f, 16 / 9.0f, 0.0f, 7.0f);
+	myCamera.SetPerspective(1.507f, 16 / 9.0f, 1.0f, 10000.0f);
 	myCamera.SetLookAt(glm::vec3(0, 0, -1), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	//glm::mat4 projection = glm::perspective(1.507f, 16 / 9.0f, 0.0f, 7.0f);
@@ -358,10 +360,16 @@ int main()
 
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_BACK);
-	//glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_WRITEMASK);
+	//glEnable(GL_DEPTH);
+	glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LESS);
 	//glFrontFace(GL_CW);
+	
+	
 
 	//game loop
+	
 	while (glfwWindowShouldClose(NewWindow) == false && glfwGetKey(NewWindow, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
 		//get deltatime
@@ -378,19 +386,20 @@ int main()
 		//pink
 		//glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
 
-		myLight.direction = glm::normalize(glm::vec3(glm::cos(deltaTime * 300), glm::sin(deltaTime * 300), 0));
+		//myLight.direction = glm::normalize(glm::vec3(glm::cos(deltaTime * 400), glm::sin(deltaTime * 400), 0));
 
 		//myLight.diffuse = glm::vec3(one, two, three);
 
 		//random color
-		glm::vec4 color = glm::vec4(one * 0.2f, two * 0.2f, three * 0.2f, 1.0f);
+		//glm::vec4 color = glm::vec4(one * 0.2f, two * 0.2f, three * 0.2f, 1.0f);
+		//glm::vec3 tempcolor = glm::vec3(one * 0.2f, two * 0.2f, three * 0.2f);
+
 
 		//glm::vec4 color = glm::vec4(1);
 
 		//update the camera
-		myCamera.Update(deltaTime, NewWindow);
-
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		myCamera.Update(deltaTime, NewWindow);
 		
 		//glm::mat4 pvm = myCamera.projection * myCamera.ViewTransform * model;
 		//myCamera.UpdateProjectionViewTransform(model);
@@ -411,37 +420,32 @@ int main()
 		{
 			model = glm::rotate(model, 0.016f, glm::vec3(-1, -1, -1));
 		}*/
-		TrooperMesh.draw();
+		//
 		
 		//soulSpearMesh.draw();
-		
 		auto pvm = myCamera.ProjectionTransform * myCamera.ViewTransform * model;
 		glUseProgram(shader_program_ID);
 		auto uniform_location = glGetUniformLocation(shader_program_ID, "projection_view_matrix");
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(pvm));
 		
 		uniform_location = glGetUniformLocation(shader_program_ID, "NormalMatrix");
-		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(glm::mat3(glm::inverseTranspose(myCamera.WorldTransform))));
+		glUniformMatrix3fv(uniform_location, 1, false, glm::value_ptr(glm::mat3(glm::inverseTranspose(myCamera.WorldTransform))));
 
 
 		uniform_location = glGetUniformLocation(shader_program_ID, "Ia");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.ambient));
+		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.colour));
 
-		uniform_location = glGetUniformLocation(shader_program_ID, "Id");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.diffuse));
-
-		uniform_location = glGetUniformLocation(shader_program_ID, "Is");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.specular));
+		
 
 
 		uniform_location = glGetUniformLocation(shader_program_ID, "LightDirection");
 		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.direction));
 
-		//uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
-		//glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
+		uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
+		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
 
-		uniform_location = glGetUniformLocation(shader_program_ID, "color");
-		glUniform4fv(uniform_location, 1, glm::value_ptr(color));
+		//uniform_location = glGetUniformLocation(shader_program_ID, "color");
+		//glUniform4fv(uniform_location, 1, glm::value_ptr(tempcolor));
 
 		
 
@@ -456,8 +460,8 @@ int main()
 			}
 
 			iterator += 1 * deltaTime;
-		int vertexColorLocation = glGetUniformLocation(shader_program_ID, "color");
-		glUniform4f(vertexColorLocation, two * 0.2f, 0.3f, one * 0.1f, 1.0f);
+		//int vertexColorLocation = glGetUniformLocation(shader_program_ID, "color");
+		//glUniform4f(vertexColorLocation, two * 0.2f, 0.3f, one * 0.1f, 1.0f);
 
 		glBindTexture(GL_TEXTURE_2D, testTexture);
 
@@ -468,7 +472,8 @@ int main()
 
 
 
-		
+
+		TrooperMesh.draw();
 		
 
 		glfwSwapBuffers(NewWindow);
