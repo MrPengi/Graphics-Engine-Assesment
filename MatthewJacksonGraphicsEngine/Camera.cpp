@@ -37,12 +37,12 @@ void Camera::Update(float deltatime, GLFWwindow* window)
 	//lets add a sprint yo
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT))
 	{
-		speed = 30;
+		speed = 300;
 		angularSpeed = 0.02f;
 	}
 	else
 	{
-		speed = 2;
+		speed = 30;
 		angularSpeed = 0.01f;
 	}
 

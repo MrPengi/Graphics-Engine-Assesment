@@ -27,7 +27,9 @@ int main()
 	struct Light
 	{
 		glm::vec3 direction;
-		glm::vec3 colour;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
+		glm::vec3 ambient;
 	};
 
 	//changed for lighing tutorial
@@ -90,8 +92,16 @@ int main()
 	//aie::OBJMesh soulSpearMesh;
 	//soulSpearMesh.load("..\\Models\\soulspear.obj", false, false);
 
+	//creation of trooper
 	aie::OBJMesh TrooperMesh;
 	TrooperMesh.load("..\\Models\\Alien_Medium.obj", false, false);
+
+	//creation of wall corner
+	aie::OBJMesh WallMesh;
+	WallMesh.load("..\\Models\\Wall_Corner.obj", false, false);
+
+	aie::OBJMesh FloorMesh;
+	FloorMesh.load("..\\Models\\Floor_Full.obj", false, false);
 
 	float one = rand() % 5;
 	float two = rand() % 5;
@@ -197,17 +207,22 @@ int main()
 	//setup of light
 	Light myLight =
 	{
-		(glm::vec3(0.0f,1.0f,0.0f)), (glm::vec3(0.25f,0.1f,1.0f))
+		(glm::vec3(0.2f,1.0f,0.2f)), (glm::vec3(0.0f,0.2f,1.0f)), (glm::vec3(0.3f,0.9f,0.5f)),(glm::vec3(0.25f,0.25f,0.25f))
 	};
 
+	// setup of my second light
+		Light mySecondLight =
+	{
+		(glm::vec3(0.0f,0.0f,-1.0f)), (glm::vec3(1.0f,1.0f,1.0f)), (glm::vec3(0.4f,0.4f,0.4f)),(glm::vec3(0.5f,0.5f,0.5f))
+	};
 
-	//texture code
-	uint testTexture;
+	//texture code (texture code for alien texture)
+	uint alienTexture;
 	int x, y, n;
 	unsigned char* data = stbi_load("../Textures/Alien_Albedo.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
 
-	glGenTextures(1, &testTexture);
-	glBindTexture(GL_TEXTURE_2D, testTexture);
+	glGenTextures(1, &alienTexture);
+	glBindTexture(GL_TEXTURE_2D, alienTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
 	//check if the texture loaded
@@ -220,10 +235,36 @@ int main()
 	}
 	else
 	{
-		printf("loading texture failed");
+		printf("loading Alien texture failed");
 	}
 
 	stbi_image_free(data);
+
+
+	//texture code (texture code for wall piece)
+	uint wallTexture;
+	int x2, y2, n2;
+	unsigned char* data2 = stbi_load("../Textures/Wall_Window_Corner_Albedo.png", &x2, &y2, &n2, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
+
+	glGenTextures(1, &wallTexture);
+	glBindTexture(GL_TEXTURE_2D, wallTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x2, y2, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
+
+	//check if the texture loaded
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x2, y2, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
+		//glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+	else
+	{
+		printf("loading wall texture failed");
+	}
+
+	stbi_image_free(data2);
+
 
 	//CAMERA STUFFS
 
@@ -232,7 +273,7 @@ int main()
 
 	//set the camera's initial perspective and view direction
 	myCamera.SetPerspective(1.507f, 16 / 9.0f, 1.0f, 10000.0f);
-	myCamera.SetLookAt(glm::vec3(0, 0, -1), glm::vec3(0), glm::vec3(0, 1, 0));
+	myCamera.SetLookAt(glm::vec3(0, 0, 100), glm::vec3(0, 50, 0), glm::vec3(0, 1, 0));
 
 	//glm::mat4 projection = glm::perspective(1.507f, 16 / 9.0f, 0.0f, 7.0f);
 	//glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
@@ -341,7 +382,7 @@ int main()
 
 	//background colour (blue
 	//glClearColor(0.3, 0.5, 1.0, 1.0);
-	glClearColor(1, 1, 1, 1);
+	//glClearColor(1, 1, 1, 1);
 
 	//bool colourChange = false;
 
@@ -385,13 +426,14 @@ int main()
 
 		//pink
 		//glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
+		glm::vec4 color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
-		//myLight.direction = glm::normalize(glm::vec3(glm::cos(deltaTime * 400), glm::sin(deltaTime * 400), 0));
+		mySecondLight.direction = glm::normalize(glm::vec3(glm::cos(deltaTime * 40), glm::sin(deltaTime * 40), 0));
 
 		//myLight.diffuse = glm::vec3(one, two, three);
 
 		//random color
-		//glm::vec4 color = glm::vec4(one * 0.2f, two * 0.2f, three * 0.2f, 1.0f);
+		glm::vec4 color2 = glm::vec4(one * 0.2f, two * 0.2f, three * 0.2f, 1.0f);
 		//glm::vec3 tempcolor = glm::vec3(one * 0.2f, two * 0.2f, three * 0.2f);
 
 
@@ -426,20 +468,40 @@ int main()
 		auto pvm = myCamera.ProjectionTransform * myCamera.ViewTransform * model;
 		glUseProgram(shader_program_ID);
 		auto uniform_location = glGetUniformLocation(shader_program_ID, "projection_view_matrix");
-		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(pvm));
+		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(pvm)); //camera get projection view
 		
 		uniform_location = glGetUniformLocation(shader_program_ID, "NormalMatrix");
 		glUniformMatrix3fv(uniform_location, 1, false, glm::value_ptr(glm::mat3(glm::inverseTranspose(myCamera.WorldTransform))));
 
 
 		uniform_location = glGetUniformLocation(shader_program_ID, "Ia");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.colour));
+		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.ambient));
 
-		
+		uniform_location = glGetUniformLocation(shader_program_ID, "Id");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.diffuse));
 
+		uniform_location = glGetUniformLocation(shader_program_ID, "Is");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.specular));
+
+		//put in Ka, Kd, Ks, specularpower into uniform (custom vec 3s)
+		uniform_location = glGetUniformLocation(shader_program_ID, "Ka");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.0f)));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "Kd");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(glm::vec3(0.1f, 0.25f, 0.4f)));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "Ks");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(glm::vec3(0.25f, 0.25f, 0.25f)));
+
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "cameraPosition");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(glm::vec3(glm::inverse(myCamera.WorldTransform)[3])));
 
 		uniform_location = glGetUniformLocation(shader_program_ID, "LightDirection");
 		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.direction));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "CameraColor");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(color));
 
 		uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
@@ -463,7 +525,30 @@ int main()
 		//int vertexColorLocation = glGetUniformLocation(shader_program_ID, "color");
 		//glUniform4f(vertexColorLocation, two * 0.2f, 0.3f, one * 0.1f, 1.0f);
 
-		glBindTexture(GL_TEXTURE_2D, testTexture);
+		glBindTexture(GL_TEXTURE_2D, alienTexture);
+
+		TrooperMesh.draw();
+
+		glBindTexture(GL_TEXTURE_2D, wallTexture);
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "Ia");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.ambient));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "Id");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.diffuse));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "Is");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.specular));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "LightDirection");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.direction));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "CameraColor");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(color2));
+
+		WallMesh.draw();
+
+		FloorMesh.draw();
 
 		glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, verticiesCount); //six becomes whatever veritcies are above (uncomment when drawing shapes again)
@@ -473,7 +558,7 @@ int main()
 
 
 
-		TrooperMesh.draw();
+		
 		
 
 		glfwSwapBuffers(NewWindow);
