@@ -24,6 +24,7 @@ int main()
 		glm::vec2 uv;
 	};*/
 
+	//light stores direction, diffuse, specular, ambient
 	struct Light
 	{
 		glm::vec3 direction;
@@ -32,7 +33,7 @@ int main()
 		glm::vec3 ambient;
 	};
 
-	//changed for lighing tutorial
+	//vertex stores position, normal, uv, tangent
 	struct Vertex
 	{
 		glm::vec3 position;
@@ -41,9 +42,9 @@ int main()
 		glm::vec4 tangent;
 	}; 
 
-
+	
 	srand(time(nullptr));
-	//initalise everything
+	
 
 	//if a new window does not open close the program
 	if (glfwInit() == false)
@@ -77,7 +78,7 @@ int main()
 	auto minor = ogl_GetMinorVersion();
 	printf("GL: %i.%i\n", major, minor);
 
-	//mesh data (quads)
+	//mesh data (quads) - old
 	/*glm::vec3 verticies[] =
 	{
 		glm::vec3(-0.5f, 0.5f, 0.0f),
@@ -89,7 +90,7 @@ int main()
 	};
 	int verticiesCount = 6;*/
 
-	//aie::OBJMesh soulSpearMesh;
+	//aie::OBJMesh soulSpearMesh; //implemented way before adam said not to... goodbye soulSpear
 	//soulSpearMesh.load("..\\Models\\soulspear.obj", false, false);
 
 	//creation of trooper
@@ -99,10 +100,16 @@ int main()
 	//creation of wall corner
 	aie::OBJMesh WallMesh;
 	WallMesh.load("..\\Models\\Wall_Corner.obj", false, false);
-
+	
+	//creation of floor
 	aie::OBJMesh FloorMesh;
 	FloorMesh.load("..\\Models\\Floor_Full.obj", false, false);
 
+	//creation of generator
+	//aie::OBJMesh GeneratorMesh;
+	//GeneratorMesh.load("..\\Models\\Cold_Generator.obj", false, false);
+
+	//random floats used in update
 	float one = rand() % 5;
 	float two = rand() % 5;
 	float three = rand() % 5;
@@ -207,13 +214,15 @@ int main()
 	//setup of light
 	Light myLight =
 	{
-		(glm::vec3(0.2f,1.0f,0.2f)), (glm::vec3(0.0f,0.2f,1.0f)), (glm::vec3(0.3f,0.9f,0.5f)),(glm::vec3(0.25f,0.25f,0.25f))
+		//direction					//diffuse						//specular					//ambient
+		(glm::vec3(0.0f,1.0f,0.0f)), (glm::vec3(0.9f, 0.3f, 0.3f)), (glm::vec3(0.75f,0.75f,0.75f)),(glm::vec3(0.1f, 0.0f, 0.2f))
 	};
 
 	// setup of my second light
 		Light mySecondLight =
 	{
-		(glm::vec3(0.0f,0.0f,-1.0f)), (glm::vec3(1.0f,1.0f,1.0f)), (glm::vec3(0.4f,0.4f,0.4f)),(glm::vec3(0.5f,0.5f,0.5f))
+		//direction					//diffuse						//specular					//ambient
+		(glm::vec3(0.0f, 0.0f, 1.0f)), (glm::vec3(0.2f, 0.9f, 0.4f)), (glm::vec3(0.2f,0.2f,0.4f)),(glm::vec3(0.1f,0.0f,0.2f))
 	};
 
 	//texture code (texture code for alien texture)
@@ -243,17 +252,17 @@ int main()
 
 	//texture code (texture code for wall piece)
 	uint wallTexture;
-	int x2, y2, n2;
-	unsigned char* data2 = stbi_load("../Textures/Wall_Window_Corner_Albedo.png", &x2, &y2, &n2, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
+	//int x2, y2, n2;
+	unsigned char* data2 = stbi_load("../Textures/Wall_Window_Corner_Albedo.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
 
 	glGenTextures(1, &wallTexture);
 	glBindTexture(GL_TEXTURE_2D, wallTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x2, y2, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
 
 	//check if the texture loaded
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x2, y2, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
 		//glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -265,6 +274,88 @@ int main()
 
 	stbi_image_free(data2);
 
+	//texture code (texture code for floor piece)
+	uint floorTexture;
+	//int x2, y2, n2;
+	unsigned char* data3 = stbi_load("../Textures/WallFloor.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
+
+	glGenTextures(1, &floorTexture);
+	glBindTexture(GL_TEXTURE_2D, floorTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data3);
+
+	//check if the texture loaded
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data3);
+		//glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+	else
+	{
+		printf("loading floor texture failed");
+	}
+
+	stbi_image_free(data3);
+
+	//setup the generator texture
+	/*uint generatorTexture;
+	//int x2, y2, n2;
+	unsigned char* data4 = stbi_load("../Textures/Cold_Generator_Albedo.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
+
+	glGenTextures(1, &generatorTexture);
+	glBindTexture(GL_TEXTURE_2D, generatorTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data4);
+
+	//check if the texture loaded
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data4);
+		//glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+	else
+	{
+		printf("loading generator texture failed");
+	}
+
+	stbi_image_free(data4);*/
+
+
+	//setup for shadow buffer?
+	/*uint frameBufferObject;
+	uint frameBufferObjectDepth;
+
+	glGenFramebuffers(1, &frameBufferObject);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+
+	glGenTextures(1, &frameBufferObjectDepth);
+	glBindTexture(GL_TEXTURE_2D, frameBufferObjectDepth);
+
+	//texture uses a 16 bit depth component format
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	//attached as a depth attachment to capture depth not colour
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, frameBufferObjectDepth, 0);
+
+	//no colour targets are used
+	glDrawBuffer(GL_NONE);
+
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if(status != GL_FRAMEBUFFER_COMPLETE)
+	{ 
+		printf("Framebuffer Error!\n");
+	}
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//creation of light projection matrix
+	glm::mat4 lightProjection = glm::ortho<float>(-10, 10, -10, 10, -10, 10);*/
 
 	//CAMERA STUFFS
 
@@ -385,10 +476,11 @@ int main()
 	//glClearColor(1, 1, 1, 1);
 
 	//bool colourChange = false;
-
+	//iterator stuffs (used with random numbers)
 	float iterator = 0;
 	float timer = 1;
 
+	//deltaTime setup
 	float deltaTime = 0;
 	float currentFrame = 0;
 	float previousFrame = 0;
@@ -418,6 +510,25 @@ int main()
 		deltaTime = currentFrame - previousFrame;
 		previousFrame = currentFrame;
 
+		//shadow code?
+		//creation of lightview
+		/*glm::mat4 lightView = glm::lookAt(myLight.direction, glm::vec3(0), glm::vec3(0, 1, 0));
+		glm::mat4 lightView2 = glm::lookAt(mySecondLight.direction, glm::vec3(0), glm::vec3(0, 1, 0));
+
+		glm::mat4 lightMatrix = lightProjection * lightView;
+		glm::mat4 lightMatrix2 = lightProjection * lightView2;
+
+		//offset matrix
+		glm::mat4 textureSpaceOffSet(
+			0.5f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.5f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.5f, 0.0f,
+			0.5f, 0.5f, 0.5f, 1.0f
+		);
+
+		lightMatrix = lightMatrix * textureSpaceOffSet;
+		lightMatrix2 = lightMatrix2 * textureSpaceOffSet;*/
+
 		/*for (int i = 0; i < sizeof(verticies); i++)
 		{
 		//amazing lag machine
@@ -426,9 +537,11 @@ int main()
 
 		//pink
 		//glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
+		//empty color
 		glm::vec4 color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
-		mySecondLight.direction = glm::normalize(glm::vec3(glm::cos(deltaTime * 40), glm::sin(deltaTime * 40), 0));
+		//rotate the second light
+		mySecondLight.direction =  glm::normalize(glm::vec3(glm::cos(currentFrame * 1), glm::sin(currentFrame * 1), 0));
 
 		//myLight.diffuse = glm::vec3(one, two, three);
 
@@ -436,6 +549,15 @@ int main()
 		glm::vec4 color2 = glm::vec4(one * 0.2f, two * 0.2f, three * 0.2f, 1.0f);
 		//glm::vec3 tempcolor = glm::vec3(one * 0.2f, two * 0.2f, three * 0.2f);
 
+		//make four new random numbers each time the iterator is greater than the timer
+		if (iterator > timer)
+		{
+			one = rand() % 5;
+			two = rand() % 5;
+			three = rand() % 5;
+			four = rand() % 5;
+			iterator = timer - iterator;
+		}
 
 		//glm::vec4 color = glm::vec4(1);
 
@@ -446,26 +568,11 @@ int main()
 		//glm::mat4 pvm = myCamera.projection * myCamera.ViewTransform * model;
 		//myCamera.UpdateProjectionViewTransform(model);
 
+		//model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
 
-
-		//if (glfwGetKey(NewWindow, GLFW_KEY_SPACE) == GLFW_PRESS)
-		//{
-		//	press != press;
-		//}
-
-		//if (press)
-		//{
-			//model = glm::rotate(model, 0.016f, glm::vec3(1, 1, 1));
-		//}
-
-		/*if (!press)
-		{
-			model = glm::rotate(model, 0.016f, glm::vec3(-1, -1, -1));
-		}*/
-		//
 		
 		//soulSpearMesh.draw();
-		auto pvm = myCamera.ProjectionTransform * myCamera.ViewTransform * model;
+		auto pvm = myCamera.ProjectionTransform * myCamera.ViewTransform /* model*/;
 		glUseProgram(shader_program_ID);
 		auto uniform_location = glGetUniformLocation(shader_program_ID, "projection_view_matrix");
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(pvm)); //camera get projection view
@@ -473,6 +580,11 @@ int main()
 		uniform_location = glGetUniformLocation(shader_program_ID, "NormalMatrix");
 		glUniformMatrix3fv(uniform_location, 1, false, glm::value_ptr(glm::mat3(glm::inverseTranspose(myCamera.WorldTransform))));
 
+		/*uniform_location = glGetUniformLocation(shader_program_ID, "lightMatrix");
+		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(glm::mat4(lightMatrix)));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "lightMatrix2");
+		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(glm::mat4(lightMatrix2)));*/
 
 		uniform_location = glGetUniformLocation(shader_program_ID, "Ia");
 		glUniform3fv(uniform_location, 1, glm::value_ptr(myLight.ambient));
@@ -485,13 +597,13 @@ int main()
 
 		//put in Ka, Kd, Ks, specularpower into uniform (custom vec 3s)
 		uniform_location = glGetUniformLocation(shader_program_ID, "Ka");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.0f)));
+		glUniform3fv(uniform_location, 1, glm::value_ptr(glm::vec3(0.8f, 0.4f, 0.4f)));
 
 		uniform_location = glGetUniformLocation(shader_program_ID, "Kd");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(glm::vec3(0.1f, 0.25f, 0.4f)));
+		glUniform3fv(uniform_location, 1, glm::value_ptr(glm::vec3(0.9f, 0.3f, 0.4f)));
 
 		uniform_location = glGetUniformLocation(shader_program_ID, "Ks");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(glm::vec3(0.25f, 0.25f, 0.25f)));
+		glUniform3fv(uniform_location, 1, glm::value_ptr(glm::vec3(0.4f, 0.1f, 0.4f)));
 
 
 		uniform_location = glGetUniformLocation(shader_program_ID, "cameraPosition");
@@ -506,56 +618,89 @@ int main()
 		uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
 
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "Ia2");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.ambient));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "Id2");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.diffuse));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "Is2");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.specular));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "LightDirection2");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.direction));
+
+		uniform_location = glGetUniformLocation(shader_program_ID, "CameraColor2");
+		glUniform3fv(uniform_location, 1, glm::value_ptr(color2));
+
 		//uniform_location = glGetUniformLocation(shader_program_ID, "color");
 		//glUniform4fv(uniform_location, 1, glm::value_ptr(tempcolor));
 
 		
 
-
-		 if (iterator > timer)
-			{
-				one = rand() % 5;
-				two = rand() % 5;
-				three = rand() % 5;
-				four = rand() % 5;
-				iterator = timer - iterator;
-			}
-
+			//add to the iterator
 			iterator += 1 * deltaTime;
 		//int vertexColorLocation = glGetUniformLocation(shader_program_ID, "color");
 		//glUniform4f(vertexColorLocation, two * 0.2f, 0.3f, one * 0.1f, 1.0f);
 
+		//shadow pass: bind shadow map target and clear depth
+			/*glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+			glViewport(0, 0, 1024, 1024);
+			glClear(GL_DEPTH_BUFFER_BIT);
+
+			int loc = glGetUniformLocation(shader_program_ID, "lightMatrix");
+			glUniformMatrix4fv(loc, 1, GL_FALSE, &(lightMatrix[0][0]));
+
+			loc = glGetUniformLocation(shader_program_ID, "lightMatrix2");
+			glUniformMatrix4fv(loc, 1, GL_FALSE, &(lightMatrix2[0][0]));
+
+			loc = glGetUniformLocation(shader_program_ID, "shadowMap");
+			glUniform1i(loc, 0);
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, frameBufferObjectDepth);*/
+
+			//glUseProgram(shader_program_ID);
+
+			
+
+		model[3] = glm::vec4(41, 0, -41, 1);
+		uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
+		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
 		glBindTexture(GL_TEXTURE_2D, alienTexture);
 
 		TrooperMesh.draw();
 
+		
+		
+
 		glBindTexture(GL_TEXTURE_2D, wallTexture);
-
-		uniform_location = glGetUniformLocation(shader_program_ID, "Ia");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.ambient));
-
-		uniform_location = glGetUniformLocation(shader_program_ID, "Id");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.diffuse));
-
-		uniform_location = glGetUniformLocation(shader_program_ID, "Is");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.specular));
-
-		uniform_location = glGetUniformLocation(shader_program_ID, "LightDirection");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(mySecondLight.direction));
-
-		uniform_location = glGetUniformLocation(shader_program_ID, "CameraColor");
-		glUniform3fv(uniform_location, 1, glm::value_ptr(color2));
-
 		WallMesh.draw();
 
+		glBindTexture(GL_TEXTURE_2D, floorTexture);
+		//model[3] = glm::vec4(100000, 0, 0, 1);
+		//glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
 		FloorMesh.draw();
 
+
+		
+
+		//uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
+		//model[3] = glm::vec4(0, -100, 0, 1);
+		//glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
+		//glBindTexture(GL_TEXTURE_2D, generatorTexture);
+		//GeneratorMesh.draw();
+
+		model[3] = glm::vec4(0, 0, 0, 1);
+		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
+		
 		glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, verticiesCount); //six becomes whatever veritcies are above (uncomment when drawing shapes again)
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-
+		
 
 
 		
