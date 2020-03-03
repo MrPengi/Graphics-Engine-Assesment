@@ -106,8 +106,8 @@ int main()
 	FloorMesh.load("..\\Models\\Floor_Full.obj", false, false);
 
 	//creation of generator
-	//aie::OBJMesh GeneratorMesh;
-	//GeneratorMesh.load("..\\Models\\Cold_Generator.obj", false, false);
+	aie::OBJMesh GeneratorMesh;
+	GeneratorMesh.load("..\\Models\\Cold_Generator.obj", false, false);
 
 	//random floats used in update
 	float one = rand() % 5;
@@ -193,8 +193,6 @@ int main()
 	//glBindVertexArray(0);
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
-
-
 	
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
@@ -299,7 +297,7 @@ int main()
 	stbi_image_free(data3);
 
 	//setup the generator texture
-	/*uint generatorTexture;
+	uint generatorTexture;
 	//int x2, y2, n2;
 	unsigned char* data4 = stbi_load("../Textures/Cold_Generator_Albedo.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
 
@@ -320,7 +318,7 @@ int main()
 		printf("loading generator texture failed");
 	}
 
-	stbi_image_free(data4);*/
+	stbi_image_free(data4);
 
 
 	//setup for shadow buffer?
@@ -364,11 +362,12 @@ int main()
 
 	//set the camera's initial perspective and view direction
 	myCamera.SetPerspective(1.507f, 16 / 9.0f, 1.0f, 10000.0f);
-	myCamera.SetLookAt(glm::vec3(0, 0, 100), glm::vec3(0, 50, 0), glm::vec3(0, 1, 0));
+	myCamera.SetLookAt(glm::vec3(-340, 350, 340), glm::vec3(0, 100, 0), glm::vec3(0, 1, 0));
 
 	//glm::mat4 projection = glm::perspective(1.507f, 16 / 9.0f, 0.0f, 7.0f);
 	//glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 	glm::mat4 model = glm::mat4(1);
+	glm::mat4 modelOppositeRotation = glm::rotate(model, 3.2f, glm::vec3(0, 1, 0));
 
 	
 
@@ -665,12 +664,7 @@ int main()
 
 			
 
-		model[3] = glm::vec4(41, 0, -41, 1);
-		uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
-		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
-		glBindTexture(GL_TEXTURE_2D, alienTexture);
-
-		TrooperMesh.draw();
+		
 
 		
 		
@@ -686,13 +680,22 @@ int main()
 
 		
 
-		//uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
-		//model[3] = glm::vec4(0, -100, 0, 1);
-		//glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
-		//glBindTexture(GL_TEXTURE_2D, generatorTexture);
-		//GeneratorMesh.draw();
+		uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
+		model[3] = glm::vec4(20, 0, -100, 1);
+		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
+		glBindTexture(GL_TEXTURE_2D, generatorTexture);
+		GeneratorMesh.draw();
+
+		modelOppositeRotation[3] = glm::vec4(0, 0, 120, 1);
+		//model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
+		
+		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(modelOppositeRotation));
+		glBindTexture(GL_TEXTURE_2D, alienTexture);
+
+		TrooperMesh.draw();
 
 		model[3] = glm::vec4(0, 0, 0, 1);
+		//model = glm::rotate(model, 0.0f, glm::vec3(0, 1, 0));
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
 		
 		glBindVertexArray(VAO);

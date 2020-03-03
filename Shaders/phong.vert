@@ -30,5 +30,5 @@ void main()
 	vTangent = NormalMatrix * vec3(Tangent.x, Tangent.y, Tangent.z);
 	vBiTangent = cross(vNormal, vTangent) * Tangent.w;
 	//vShadowCoord = lightMatrix * lightMatrix2 * vec4(local_position, 1.0);
-    gl_Position = projection_view_matrix * model_matrix /* lightMatrix * lightMatrix2 */ vec4(local_position, 1.0);
+    gl_Position = projection_view_matrix * model_matrix /* lightMatrix * lightMatrix2 */ * vec4(local_position, 1.0);
 }
