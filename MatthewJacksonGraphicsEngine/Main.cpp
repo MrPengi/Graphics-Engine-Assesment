@@ -17,12 +17,6 @@ using uint = unsigned int;
 
 int main()
 {
-	//og
-	/*struct Vertex
-	{
-		glm::vec3 position;
-		glm::vec2 uv;
-	};*/
 
 	//light stores direction, diffuse, specular, ambient
 	struct Light
@@ -42,7 +36,7 @@ int main()
 		glm::vec4 tangent;
 	}; 
 
-	
+	//random seed
 	srand(time(nullptr));
 	
 
@@ -90,75 +84,40 @@ int main()
 	};
 	int verticiesCount = 6;*/
 
-	//aie::OBJMesh soulSpearMesh; //implemented way before adam said not to... goodbye soulSpear
+	//aie::OBJMesh soulSpearMesh; //imported into project way before adam said not to... goodbye soulSpear, you will not be missed
 	//soulSpearMesh.load("..\\Models\\soulspear.obj", false, false);
 
-	//creation of trooper
+	//creation of trooper obj
 	aie::OBJMesh TrooperMesh;
 	TrooperMesh.load("..\\Models\\Alien_Medium.obj", false, false);
 
-	//creation of wall corner
+	//creation of wall corner obj
 	aie::OBJMesh WallMesh;
 	WallMesh.load("..\\Models\\Wall_Corner.obj", false, false);
 	
-	//creation of floor
+	//creation of floor obj
 	aie::OBJMesh FloorMesh;
 	FloorMesh.load("..\\Models\\Floor_Full.obj", false, false);
 
-	//creation of generator
+	//creation of generator obj
 	aie::OBJMesh GeneratorMesh;
 	GeneratorMesh.load("..\\Models\\Cold_Generator.obj", false, false);
 
 	//random floats used in update
-	float one = rand() % 5;
-	float two = rand() % 5;
-	float three = rand() % 5;
-	float four = rand() % 5;
+	float randomNumberOne = rand() % 5;
+	float randomNumberTwo = rand() % 5;
+	float randomNumberThree = rand() % 5;
+	float randomNumberFour = rand() % 5;
 	
 	//float textureCoords[] =
-	//{    //texture coords
+	//{    //texture coords (old)
 		//	1.0f, 1.0f,
 			//0.0f, 0.0f,
 			//0.0f, 1.0f,
 			//1.0f, 0.0f,
 	//};
 
-	//Vertex verticies[] =
-	//{
-	//	{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(1.0f,0.0f)},
-	//	{glm::vec3(-0.5f, -0.5f, 0.0f),   glm::vec2(0.0f,0.0f)},
-	//	{glm::vec3(0.5f, 0.5f, 0.0f),  glm::vec2(1.0f,1.0f) }, //top right
-	//	{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(0.0f,1.0f) },//bottom right
-	//
-	//	//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1.0f,1.0f)},
-	//	//{glm::vec3(-0.5f, -0.5f, 0.0f),  glm::vec2(0.0f,1.0f)},//3 (base left)
-	//	
-	//	//{glm::vec3(-0.5f, 0.5f, 0.0f),glm::vec2(0.0f,0.5f) },
-	//	//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(0.5f,1.0f) },
-	//	//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(0.5f,0.0f) },//9 (top side)
-	//	//
-	//	//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
-	//	//{glm::vec3(0.0f, -0.5f, 0.5f),glm::vec2(0.0f,1.0f)},
-	//	//{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.3f,0.0f)},//12 (bottom side)
-	//	//
-	//	//{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(1.0f,0.0f)},
-	//	//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(1.0f,0.3f)},
-	//	//{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(0.0f,0.0f)},//15 (top to bottom right)
-	//	//
-	//	//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
-	//	//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1.0f,1.0f)},
-	//	//{glm::vec3(0.0f, 0.5f, 0.5f), glm::vec2(0.0f,0.0f)},//18 (top to bottom left)
-	//	//
-	//	//{glm::vec3(-0.5f, -0.5f, 0.0f),glm::vec2(0.0f,1.0f)},
-	//	//{glm::vec3(0.0f, -0.5f, 0.5f),glm::vec2(0.0f,0.0f)},
-	//	//{glm::vec3(0.0f, 0.5f, 0.5f), glm::vec2(1.0f,0.0f)},//21 (top to bottom left)
-	//	//
-	//	//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
-	//	//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(0.0f,1.0f)},
-	//	//{glm::vec3(0.0f, -0.5f, 0.5f), glm::vec2(0.0f,0.0f)}//24 (top to bottom left)
-	//
-	//};
-
+	//verticies of a square
 	Vertex verticies[] =
 	{//POSITION						//NORMAL							//TEXTURE COORDS
 		{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec4(0.0f,0.0f, -1.0f, 0.0f), glm::vec2(1.0f,0.0f), glm::vec4(0.0f,0.0f, 1.0f, 0.0f)},
@@ -173,27 +132,23 @@ int main()
 	uint VBO;
 	uint IBO;
 
+	//creation of index buffer
 	int index_buffer[]{ 0,2,1,3,1,2 };
 
+	//setup VAO, VBO and IBO
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &IBO);
 
-	
-	
-	
+	//setup VBO
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, verticiesCount * sizeof(Vertex), &verticies[0], GL_STATIC_DRAW);
 
+	//setup IBO
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(int), index_buffer, GL_STATIC_DRAW);
 
-	
-	//glBindVertexArray(0);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	
@@ -226,8 +181,10 @@ int main()
 	//texture code (texture code for alien texture)
 	uint alienTexture;
 	int x, y, n;
+	//load alien texture
 	unsigned char* data = stbi_load("../Textures/Alien_Albedo.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
 
+	//bind texture to unsigned int alienTexture
 	glGenTextures(1, &alienTexture);
 	glBindTexture(GL_TEXTURE_2D, alienTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -244,15 +201,15 @@ int main()
 	{
 		printf("loading Alien texture failed");
 	}
-
+	//free up data
 	stbi_image_free(data);
-
 
 	//texture code (texture code for wall piece)
 	uint wallTexture;
-	//int x2, y2, n2;
+	//load wall corner texture
 	unsigned char* data2 = stbi_load("../Textures/Wall_Window_Corner_Albedo.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
 
+	//bind texture to unsigned int wallTexture
 	glGenTextures(1, &wallTexture);
 	glBindTexture(GL_TEXTURE_2D, wallTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
@@ -269,14 +226,15 @@ int main()
 	{
 		printf("loading wall texture failed");
 	}
-
+	//freeup data2
 	stbi_image_free(data2);
 
 	//texture code (texture code for floor piece)
 	uint floorTexture;
-	//int x2, y2, n2;
+	//load wallFloor texture
 	unsigned char* data3 = stbi_load("../Textures/WallFloor.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
 
+	//bind texture to unsigned int alienTexture
 	glGenTextures(1, &floorTexture);
 	glBindTexture(GL_TEXTURE_2D, floorTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data3);
@@ -294,13 +252,15 @@ int main()
 		printf("loading floor texture failed");
 	}
 
+	//freeup data3
 	stbi_image_free(data3);
 
 	//setup the generator texture
 	uint generatorTexture;
-	//int x2, y2, n2;
+	//load Generator Texture
 	unsigned char* data4 = stbi_load("../Textures/Cold_Generator_Albedo.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
 
+	//bind texture to unsigned int generatorTexture
 	glGenTextures(1, &generatorTexture);
 	glBindTexture(GL_TEXTURE_2D, generatorTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data4);
@@ -317,11 +277,11 @@ int main()
 	{
 		printf("loading generator texture failed");
 	}
-
+	//free up data4
 	stbi_image_free(data4);
 
 
-	//setup for shadow buffer?
+	//setup for shadow buffer? (i attempted shadows but it didnt work, so i commented it out and left it where it would be)
 	/*uint frameBufferObject;
 	uint frameBufferObjectDepth;
 
@@ -360,12 +320,11 @@ int main()
 	//setup an instance of the camera
 	Camera myCamera;
 
-	//set the camera's initial perspective and view direction
+	//set the camera's initial perspective and view direction (and dont have the near plane be 0)
 	myCamera.SetPerspective(1.507f, 16 / 9.0f, 1.0f, 10000.0f);
 	myCamera.SetLookAt(glm::vec3(-340, 350, 340), glm::vec3(0, 100, 0), glm::vec3(0, 1, 0));
 
-	//glm::mat4 projection = glm::perspective(1.507f, 16 / 9.0f, 0.0f, 7.0f);
-	//glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
+	//create model matrix (and model matrix with opposite rotation)
 	glm::mat4 model = glm::mat4(1);
 	glm::mat4 modelOppositeRotation = glm::rotate(model, 3.2f, glm::vec3(0, 1, 0));
 
@@ -379,7 +338,7 @@ int main()
 	//load shader from file to string
 	std::string shader_data;
 	//std::ifstream in_file_stream("..\\Shaders\\simple_vertex.glsl", std::ifstream::in);
-	std::ifstream in_file_stream("..\\Shaders\\phong.vert", std::ifstream::in);
+	std::ifstream in_file_stream("..\\Shaders\\phong.vert", std::ifstream::in); //phong.vert is the name of my most up to date vertex shader
 
 	//load the source into a string for complication
 	std::stringstream string_stream;
@@ -409,7 +368,7 @@ int main()
 
 	//frag shader ROUND 2
 	//std::ifstream in_file_stream_frag("..\\Shaders\\simple_frag.glsl", std::ifstream::in); //or simple frag2 (for texture)
-	std::ifstream in_file_stream_frag("..\\Shaders\\phong.frag", std::ifstream::in);
+	std::ifstream in_file_stream_frag("..\\Shaders\\phong.frag", std::ifstream::in); //phong.frag is the name of my most up to date fragment shader
 
 	//load the source into a string for complication
 	std::stringstream frag_string_stream;
@@ -470,8 +429,10 @@ int main()
 		verticies[i] = (glm::vec3)(pvm * glm::vec4(verticies[i], 1));
 	}*/
 
-	//background colour (blue
+	//background colour (blue)
 	//glClearColor(0.3, 0.5, 1.0, 1.0);
+
+	//background colour (white)
 	//glClearColor(1, 1, 1, 1);
 
 	//bool colourChange = false;
@@ -509,7 +470,7 @@ int main()
 		deltaTime = currentFrame - previousFrame;
 		previousFrame = currentFrame;
 
-		//shadow code?
+		//shadow code? (i attempted shadows but it didnt work, so i commented it out and left it where it would be)
 		//creation of lightview
 		/*glm::mat4 lightView = glm::lookAt(myLight.direction, glm::vec3(0), glm::vec3(0, 1, 0));
 		glm::mat4 lightView2 = glm::lookAt(mySecondLight.direction, glm::vec3(0), glm::vec3(0, 1, 0));
@@ -534,7 +495,7 @@ int main()
 			std::cout << verticies[i].x << " " << verticies[i].y << verticies[i].z << " " << verticies[i].z << " \n";
 		}*/
 
-		//pink
+		//pink color
 		//glm::vec4 color = glm::vec4(1.0f, 0.3f, 0.7f, 0.0f);
 		//empty color
 		glm::vec4 color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -545,16 +506,16 @@ int main()
 		//myLight.diffuse = glm::vec3(one, two, three);
 
 		//random color
-		glm::vec4 color2 = glm::vec4(one * 0.2f, two * 0.2f, three * 0.2f, 1.0f);
+		glm::vec4 color2 = glm::vec4(randomNumberOne * 0.2f, randomNumberTwo * 0.2f, randomNumberThree * 0.2f, 1.0f);
 		//glm::vec3 tempcolor = glm::vec3(one * 0.2f, two * 0.2f, three * 0.2f);
 
 		//make four new random numbers each time the iterator is greater than the timer
 		if (iterator > timer)
 		{
-			one = rand() % 5;
-			two = rand() % 5;
-			three = rand() % 5;
-			four = rand() % 5;
+			randomNumberOne = rand() % 5;
+			randomNumberTwo = rand() % 5;
+			randomNumberThree = rand() % 5;
+			randomNumberFour = rand() % 5;
 			iterator = timer - iterator;
 		}
 
@@ -564,13 +525,10 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		myCamera.Update(deltaTime, NewWindow);
 		
-		//glm::mat4 pvm = myCamera.projection * myCamera.ViewTransform * model;
-		//myCamera.UpdateProjectionViewTransform(model);
-
-		//model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
-
 		
 		//soulSpearMesh.draw();
+
+		//create pvm and assign uniforms
 		auto pvm = myCamera.ProjectionTransform * myCamera.ViewTransform /* model*/;
 		glUseProgram(shader_program_ID);
 		auto uniform_location = glGetUniformLocation(shader_program_ID, "projection_view_matrix");
@@ -668,47 +626,40 @@ int main()
 
 		
 		
-
+		//bind textures and draw mesh
 		glBindTexture(GL_TEXTURE_2D, wallTexture);
 		WallMesh.draw();
 
+		//bind textures and draw mesh
 		glBindTexture(GL_TEXTURE_2D, floorTexture);
-		//model[3] = glm::vec4(100000, 0, 0, 1);
-		//glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
 		FloorMesh.draw();
 
 
 		
-
+		//change model matrix for generator, bind generator texture and draw mesh
 		uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
 		model[3] = glm::vec4(20, 0, -100, 1);
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
 		glBindTexture(GL_TEXTURE_2D, generatorTexture);
 		GeneratorMesh.draw();
 
+		//change modelOppositeRotation's position for trooperm bind texture and draw mesh
 		modelOppositeRotation[3] = glm::vec4(0, 0, 120, 1);
-		//model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
-		
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(modelOppositeRotation));
 		glBindTexture(GL_TEXTURE_2D, alienTexture);
-
 		TrooperMesh.draw();
 
+		//set model matrix position back to 0
 		model[3] = glm::vec4(0, 0, 0, 1);
-		//model = glm::rotate(model, 0.0f, glm::vec3(0, 1, 0));
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
-		
+
+		//bind the vertex array
 		glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, verticiesCount); //six becomes whatever veritcies are above (uncomment when drawing shapes again)
-
+		//draw the square
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		
-
-
-		
-		
-
+		//swap buffers
 		glfwSwapBuffers(NewWindow);
 		glfwPollEvents();
 	}
@@ -720,7 +671,9 @@ int main()
 	return 0;
 }
 
-//triangular prism
+//below is extra code that was kept for some reason
+
+//triangular prism (does not use index buffer)
 //glm::vec3 verticies[] =
 //{
 //	glm::vec3(-0.5f, 0.5f, 0.0f),
@@ -855,7 +808,7 @@ int main()
 //}
 //iterator += 1 * deltaTime;
 
-//random colour code
+//OLD random colour code
 /*if (!colourChange)
 		{
 
@@ -913,3 +866,40 @@ int main()
 		}*/
 
 		//glm::vec4 color = glm::vec4((0.1f * one), (0.1f * two), (0.1f * three), (0.1f * four));
+
+//attempt at recreating rectangular prism with ibo (and stopped mid way through)
+	//Vertex verticies[] =
+	//{
+	//	{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(1.0f,0.0f)},
+	//	{glm::vec3(-0.5f, -0.5f, 0.0f),   glm::vec2(0.0f,0.0f)},
+	//	{glm::vec3(0.5f, 0.5f, 0.0f),  glm::vec2(1.0f,1.0f) }, //top right
+	//	{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(0.0f,1.0f) },//bottom right
+	//
+	//	//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1.0f,1.0f)},
+	//	//{glm::vec3(-0.5f, -0.5f, 0.0f),  glm::vec2(0.0f,1.0f)},//3 (base left)
+	//	
+	//	//{glm::vec3(-0.5f, 0.5f, 0.0f),glm::vec2(0.0f,0.5f) },
+	//	//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(0.5f,1.0f) },
+	//	//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(0.5f,0.0f) },//9 (top side)
+	//	//
+	//	//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
+	//	//{glm::vec3(0.0f, -0.5f, 0.5f),glm::vec2(0.0f,1.0f)},
+	//	//{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.3f,0.0f)},//12 (bottom side)
+	//	//
+	//	//{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(1.0f,0.0f)},
+	//	//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(1.0f,0.3f)},
+	//	//{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(0.0f,0.0f)},//15 (top to bottom right)
+	//	//
+	//	//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
+	//	//{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1.0f,1.0f)},
+	//	//{glm::vec3(0.0f, 0.5f, 0.5f), glm::vec2(0.0f,0.0f)},//18 (top to bottom left)
+	//	//
+	//	//{glm::vec3(-0.5f, -0.5f, 0.0f),glm::vec2(0.0f,1.0f)},
+	//	//{glm::vec3(0.0f, -0.5f, 0.5f),glm::vec2(0.0f,0.0f)},
+	//	//{glm::vec3(0.0f, 0.5f, 0.5f), glm::vec2(1.0f,0.0f)},//21 (top to bottom left)
+	//	//
+	//	//{glm::vec3(0.5f, -0.5f, 0.0f),glm::vec2(1.0f,0.0f)},
+	//	//{glm::vec3(0.0f, 0.5f, 0.5f),glm::vec2(0.0f,1.0f)},
+	//	//{glm::vec3(0.0f, -0.5f, 0.5f), glm::vec2(0.0f,0.0f)}//24 (top to bottom left)
+	//
+	//};

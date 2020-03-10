@@ -6,12 +6,16 @@ class Camera
 {
 public:
 
+	//world transform
 	glm::mat4 WorldTransform;
 
+	//view transform
 	glm::mat4 ViewTransform;
 
+	//projection transform
 	glm::mat4 ProjectionTransform;
 
+	//projection view transform
 	glm::mat4 ProjectionViewTransform;
 
 	float timer = 0;
@@ -21,18 +25,6 @@ public:
 	float angularSpeed = 0.01f;
 
 	bool firstMouseCall = true;
-	//variables
-
-	
-	//glm::vec3 CameraPosition;
-	
-	//glm::vec3 CameraFront;
-
-	//glm::vec3 CameraUp;
-
-	//glm::mat4 projection;
-
-	//glm::mat4 model;
 
 	float speed;
 
@@ -44,10 +36,10 @@ public:
 
 	void Update(float deltatime, GLFWwindow* window);
 
-	//
+	//set perspective, used at start of creating
 	void SetPerspective(float FieldOfView, float AspectRatio, float Near, float Far);
 	
-	// (requires CameraPos, direction and up/right to be setup
+	//(requires CameraPos, direction and up/right to be setup
 	void SetLookAt(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
 
 	

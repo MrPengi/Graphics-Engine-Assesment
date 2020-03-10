@@ -12,18 +12,6 @@ Camera::Camera()
 
 		ProjectionViewTransform = glm::mat4(1);
 
-		//variables
-
-		//CameraPosition = glm::vec3(0);
-
-		//CameraFront = glm::vec3(0);
-
-		//CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-		//model = glm::mat4(1);
-
-		//projection = glm::mat4(1);
-
 		speed = 1;
 }
 
