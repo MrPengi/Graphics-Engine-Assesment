@@ -13,7 +13,11 @@
 
 using uint = unsigned int;
 
+//used to draw meshchunks  that have normal maps(sword and shield)
+void drawMeshChunks(aie::MeshChunk& current_mesh, uint* current_shader, uint diffuse, uint normal);
 
+//used to load textures
+uint loadTexture(uint textureName, const char* location);
 
 int main()
 {
@@ -103,6 +107,13 @@ int main()
 	aie::OBJMesh GeneratorMesh;
 	GeneratorMesh.load("..\\Models\\Cold_Generator.obj", false, false);
 
+	//creation of shield obj
+	aie::OBJMesh ShieldMesh;
+	ShieldMesh.load("..\\Models\\meshSwordShield.obj", false, false);
+
+	aie::MeshChunk ShieldChunks = ShieldMesh.m_meshChunks[0];
+	aie::MeshChunk SwordChunks = ShieldMesh.m_meshChunks[1];
+
 	//random floats used in update
 	float randomNumberOne = rand() % 5;
 	float randomNumberTwo = rand() % 5;
@@ -125,7 +136,7 @@ int main()
 		{glm::vec3(0.5f, 0.5f, 0.0f),  glm::vec4(0.0f,0.0f, -1.0f, 0.0f), glm::vec2(1.0f,1.0f), glm::vec4(0.0f,0.0f, 1.0f, 0.0f) }, //top right
 		{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec4(0.0f,0.0f, -1.0f, 0.0f), glm::vec2(0.0f,1.0f), glm::vec4(0.0f,0.0f, 1.0f, 0.0f) },//bottom right
 	};
-	int verticiesCount = 24; //24
+	int verticiesCount = 4; //24
 	
 	//create and "load" mesh
 	uint VAO;
@@ -168,7 +179,7 @@ int main()
 	Light myLight =
 	{
 		//direction					//diffuse						//specular					//ambient
-		(glm::vec3(0.0f,1.0f,0.0f)), (glm::vec3(0.9f, 0.3f, 0.3f)), (glm::vec3(0.75f,0.75f,0.75f)),(glm::vec3(0.1f, 0.0f, 0.2f))
+		(glm::vec3(0.0f,1.0f,0.0f)), (glm::vec3(0.9f, 0.3f, 0.3f)), (glm::vec3(0.2f,0.2f,0.2f)),(glm::vec3(0.1f, 0.9f, 0.2f))
 	};
 
 	// setup of my second light
@@ -178,108 +189,26 @@ int main()
 		(glm::vec3(0.0f, 0.0f, 1.0f)), (glm::vec3(0.2f, 0.9f, 0.4f)), (glm::vec3(0.2f,0.2f,0.4f)),(glm::vec3(0.1f,0.0f,0.2f))
 	};
 
-	//texture code (texture code for alien texture)
-	uint alienTexture;
-	int x, y, n;
-	//load alien texture
-	unsigned char* data = stbi_load("../Textures/Alien_Albedo.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
-
-	//bind texture to unsigned int alienTexture
-	glGenTextures(1, &alienTexture);
-	glBindTexture(GL_TEXTURE_2D, alienTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-	//check if the texture loaded
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		//glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	}
-	else
-	{
-		printf("loading Alien texture failed");
-	}
-	//free up data
-	stbi_image_free(data);
-
-	//texture code (texture code for wall piece)
-	uint wallTexture;
-	//load wall corner texture
-	unsigned char* data2 = stbi_load("../Textures/Wall_Window_Corner_Albedo.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
-
-	//bind texture to unsigned int wallTexture
-	glGenTextures(1, &wallTexture);
-	glBindTexture(GL_TEXTURE_2D, wallTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
-
-	//check if the texture loaded
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
-		//glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	}
-	else
-	{
-		printf("loading wall texture failed");
-	}
-	//freeup data2
-	stbi_image_free(data2);
-
-	//texture code (texture code for floor piece)
-	uint floorTexture;
-	//load wallFloor texture
-	unsigned char* data3 = stbi_load("../Textures/WallFloor.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
-
-	//bind texture to unsigned int alienTexture
-	glGenTextures(1, &floorTexture);
-	glBindTexture(GL_TEXTURE_2D, floorTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data3);
-
-	//check if the texture loaded
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data3);
-		//glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	}
-	else
-	{
-		printf("loading floor texture failed");
-	}
-
-	//freeup data3
-	stbi_image_free(data3);
-
-	//setup the generator texture
-	uint generatorTexture;
-	//load Generator Texture
-	unsigned char* data4 = stbi_load("../Textures/Cold_Generator_Albedo.png", &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
-
-	//bind texture to unsigned int generatorTexture
-	glGenTextures(1, &generatorTexture);
-	glBindTexture(GL_TEXTURE_2D, generatorTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data4);
-
-	//check if the texture loaded
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data4);
-		//glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	}
-	else
-	{
-		printf("loading generator texture failed");
-	}
-	//free up data4
-	stbi_image_free(data4);
-
+	//load the various textures used in the program
+	uint alienTexture = 0;	
+	alienTexture = loadTexture(alienTexture, "../Textures/Alien_Albedo.png");
+	uint wallTexture = 0;
+	wallTexture = loadTexture(wallTexture, "../Textures/Wall_Window_Corner_Albedo.png");
+	uint floorTexture = 0;
+	floorTexture = loadTexture(floorTexture, "../Textures/WallFloor.png");
+	uint generatorTexture = 0;
+	generatorTexture = loadTexture(generatorTexture, "../Textures/Cold_Generator_Albedo.png");
+	uint shieldTexture = 0;
+	shieldTexture = loadTexture(shieldTexture, "../Textures/UVAlbedoMap_Shield.png");
+	uint shieldNormalMap = 0;
+	shieldNormalMap = loadTexture(shieldNormalMap, "../Textures/UVNormalMap_Shield.png");
+	uint swordTexture = 0;
+	swordTexture = loadTexture(swordTexture, "../Textures/UVAlbedoMap_Sword.png");
+	uint swordNormalMap = 0;
+	swordNormalMap = loadTexture(swordNormalMap, "../Textures/UVNormalMap_Sword.png");
+	uint blankNormalMap = 0;
+	blankNormalMap = loadTexture(shieldTexture, "../Textures/BlankNormal.png");
+		
 
 	//setup for shadow buffer? (i attempted shadows but it didnt work, so i commented it out and left it where it would be)
 	/*uint frameBufferObject;
@@ -322,7 +251,10 @@ int main()
 
 	//set the camera's initial perspective and view direction (and dont have the near plane be 0)
 	myCamera.SetPerspective(1.507f, 16 / 9.0f, 1.0f, 10000.0f);
-	myCamera.SetLookAt(glm::vec3(-340, 350, 340), glm::vec3(0, 100, 0), glm::vec3(0, 1, 0));
+	//start looking at the sword and shield
+	myCamera.SetLookAt(glm::vec3(-10, 5, 120), glm::vec3(0, 0, 120), glm::vec3(0, 1, 0));
+	//start looking at the whole lot
+	//myCamera.SetLookAt(glm::vec3(-340, 350, 340), glm::vec3(0, 100, 0), glm::vec3(0, 1, 0));
 
 	//create model matrix (and model matrix with opposite rotation)
 	glm::mat4 model = glm::mat4(1);
@@ -503,6 +435,8 @@ int main()
 		//rotate the second light
 		mySecondLight.direction =  glm::normalize(glm::vec3(glm::cos(currentFrame * 1), glm::sin(currentFrame * 1), 0));
 
+		//myLight.direction = glm::normalize(glm::vec3(glm::cos(currentFrame * 1), glm::sin(currentFrame * 1), 0));
+
 		//myLight.diffuse = glm::vec3(one, two, three);
 
 		//random color
@@ -528,7 +462,7 @@ int main()
 		
 		//soulSpearMesh.draw();
 
-		//create pvm and assign uniforms
+		//create pvm and assign uniforms (goes on for quite a bit)
 		auto pvm = myCamera.ProjectionTransform * myCamera.ViewTransform /* model*/;
 		glUseProgram(shader_program_ID);
 		auto uniform_location = glGetUniformLocation(shader_program_ID, "projection_view_matrix");
@@ -627,27 +561,47 @@ int main()
 		
 		
 		//bind textures and draw mesh
+		//glBindTexture(GL_TEXTURE_2D, wallTexture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, blankNormalMap);
+		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, wallTexture);
 		WallMesh.draw();
 
 		//bind textures and draw mesh
+		//glBindTexture(GL_TEXTURE_2D, floorTexture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, blankNormalMap);
+		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, floorTexture);
 		FloorMesh.draw();
 
-
+		
 		
 		//change model matrix for generator, bind generator texture and draw mesh
 		uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
 		model[3] = glm::vec4(20, 0, -100, 1);
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
+		//glBindTexture(GL_TEXTURE_2D, generatorTexture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, blankNormalMap);
+		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, generatorTexture);
 		GeneratorMesh.draw();
 
 		//change modelOppositeRotation's position for trooperm bind texture and draw mesh
 		modelOppositeRotation[3] = glm::vec4(0, 0, 120, 1);
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(modelOppositeRotation));
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, blankNormalMap);
+		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, alienTexture);
+		//glBindTexture(GL_TEXTURE_2D, alienTexture);
 		TrooperMesh.draw();
+
+		//bind textures and draw meshes for sword
+		drawMeshChunks(ShieldChunks, &shader_program_ID, shieldNormalMap, shieldTexture);
+		drawMeshChunks(SwordChunks, &shader_program_ID, swordNormalMap, swordTexture);
 
 		//set model matrix position back to 0
 		model[3] = glm::vec4(0, 0, 0, 1);
@@ -669,6 +623,79 @@ int main()
 	glfwDestroyWindow(NewWindow);
 	glfwTerminate();
 	return 0;
+}
+
+void drawMeshChunks(aie::MeshChunk& current_mesh, uint* current_shader, uint diffuse, uint normal)
+{
+	// Get uniform ids
+	int program = -1;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+	int diffuseTexUniform = glGetUniformLocation(program, "diffuse_texture");
+	int normalTexUniform = glGetUniformLocation(program, "normal_texture");
+
+	// Set textures to an ID
+	if (diffuseTexUniform >= 0)
+		glUniform1i(diffuseTexUniform, 0);
+	if (normalTexUniform >= 0)
+		glUniform1i(normalTexUniform, 1);
+
+	// Bind textures to correct ID
+	glActiveTexture(GL_TEXTURE0);
+	if (diffuse)
+		glBindTexture(GL_TEXTURE_2D, diffuse);
+	else if (diffuseTexUniform >= 0)
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+	// Bind textures to correct ID
+	glActiveTexture(GL_TEXTURE1);
+	if (normal)
+		glBindTexture(GL_TEXTURE_2D, normal);
+	else if (normalTexUniform >= 0)
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+	/* Simplified view of texture binding
+	// Specifying what texture I am setting
+	glActiveTexture(GL_TEXTURE0);
+	// Set texture
+	glBindTexture(GL_TEXTURE_2D, diffuse->texture_id);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, normal->texture_id);
+	*/
+
+	// Draw on screen
+	glBindVertexArray(current_mesh.vao);
+	glDrawElements(GL_TRIANGLES, current_mesh.indexCount, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+}
+
+uint loadTexture(uint textureName, const char* location)
+{
+	uint NewTexture = textureName;
+	int x, y, n;
+	//load texture
+	unsigned char* data = stbi_load(location, &x, &y, &n, 0); //slice.jpg Alien_Albedo.png UV_Grid_Sm.jpg
+
+	//bind texture to unsigned int 
+	glGenTextures(1, &NewTexture);
+	glBindTexture(GL_TEXTURE_2D, NewTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	//check if the texture loaded
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		//glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+	else
+	{
+		printf("loading Alien texture failed");
+	}
+	//free up data
+	stbi_image_free(data);
+	return NewTexture;
 }
 
 //below is extra code that was kept for some reason

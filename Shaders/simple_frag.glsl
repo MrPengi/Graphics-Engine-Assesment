@@ -1,5 +1,9 @@
 #version 450
 
+//THIS IS AN OUDATED SHADER
+//GO TO PHONG.FRAG FOR THE MOST UP TO DATE SHADER THIS PROGRAM USES
+
+//this was the first frag shader test
 uniform vec4 color = vec4(1,1,1,1);
 
 in vec4 vertexColor;

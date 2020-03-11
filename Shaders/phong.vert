@@ -9,21 +9,26 @@ layout(location = 3) in vec4 Tangent;
 uniform mat4 projection_view_matrix;
 uniform mat4 model_matrix;
 
+//commented out shadow code
 //uniform mat4 lightMatrix;
 //uniform mat4 lightMatrix2;
+//out vec4 vShadowCoord;
 
+//various outs to go to frag shader
 out vec2 final_texture_coodinates;
 out vec3 vNormal;
 out vec3 vTangent;
 out vec3 vBiTangent;
 out vec4 vPosition;
 
-//out vec4 vShadowCoord;
+
 
 uniform mat3 NormalMatrix;
 
 void main()
 {
+	//various outs that correspond to ins found in frag shader.
+
 	final_texture_coodinates = texture_coordinates;
 	vPosition = model_matrix * vec4(local_position, 1);
     vNormal = NormalMatrix *  vec3(normal.x, normal.y, normal.z);

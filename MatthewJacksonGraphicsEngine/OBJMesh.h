@@ -9,7 +9,11 @@
 //#include "Texture.h"
 
 namespace aie {
-
+	struct MeshChunk {
+		unsigned int	vao, vbo, ibo;
+		unsigned int	indexCount;
+		int				materialID;
+	};
 // a simple triangle mesh wrapper
 class OBJMesh {
 public:
@@ -64,19 +68,16 @@ public:
 	size_t getMaterialCount() const { return m_materials.size();  }
 	Material& getMaterial(size_t index) { return m_materials[index];  }
 
-private:
+
 
 	void calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 
-	struct MeshChunk {
-		unsigned int	vao, vbo, ibo;
-		unsigned int	indexCount;
-		int				materialID;
-	};
+	
 
 	std::string				m_filename;
 	std::vector<MeshChunk>	m_meshChunks;
 	std::vector<Material>	m_materials;
 };
+
 
 } // namespace aie

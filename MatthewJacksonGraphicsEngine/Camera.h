@@ -18,14 +18,19 @@ public:
 	//projection view transform
 	glm::mat4 ProjectionViewTransform;
 
+	//used with mouse catching
 	float timer = 0;
 
+	//bool to lock mouse to centre of screen
 	bool mouseCatch = true;
 
+	//rotation speed
 	float angularSpeed = 0.01f;
 
+	//is it the first mouse call?
 	bool firstMouseCall = true;
 
+	//speed the camera moves 
 	float speed;
 
 	//constructor
@@ -34,6 +39,7 @@ public:
 	//destructor
 	~Camera();
 
+	//camera update function
 	void Update(float deltatime, GLFWwindow* window);
 
 	//set perspective, used at start of creating
@@ -42,7 +48,7 @@ public:
 	//(requires CameraPos, direction and up/right to be setup
 	void SetLookAt(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
 
-	
+	//sets the position of the camera
 	void SetPosition(glm::vec3 position);
 
 
@@ -59,6 +65,7 @@ public:
 	//gets the projection view transform
 	glm::mat4 GetProjectionView();
 
+	//updates the projection view matrix
 	void UpdateProjectionViewTransform();
 
 };
